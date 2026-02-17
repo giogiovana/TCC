@@ -52,7 +52,9 @@ func (r *ProdutoRepoPG) List(ctx context.Context, limit, offset int) ([]models.P
 		limit = 50
 	}
 	const q = `
-	select id_produto, marca, modelo, tipo, descricao, categoria, observacao from produtos order by id_produto limit $1 offset $2
+	select id_produto, marca, modelo, tipo, descricao, categoria, observacao 
+	from produtos order by id_produto 
+	limit $1 offset $2
 	`
 
 	var out []models.Produto

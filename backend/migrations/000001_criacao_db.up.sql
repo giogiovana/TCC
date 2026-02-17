@@ -70,7 +70,6 @@ create table produtos (
 	constraint pk_produtos primary key (id_produto)
 );
 
-
 create table servicos (
 	id_servico serial,
 	nome varchar(50) not null,

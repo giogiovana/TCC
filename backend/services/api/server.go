@@ -50,11 +50,17 @@ func (s *Server) Listen() {
 	clienteRepo := database.NewClienteRepo(s.db)
 	tecnicoRepo := database.NewTecnicoRepo(s.db)
 	produtoRepo := database.NewProdutoRepo(s.db)
+	servicoRepo := database.NewServicoRepo(s.db)
+	osRepo := database.NewOsRepo(s.db)
+	controleOsRepo := database.NewControleOsRepo(s.db)
 
 	usuarioSvc := services.NewUsuarioService(usuarioRepo)
 	clienteSvc := services.NewClienteService(clienteRepo)
 	tecnicoSvc := services.NewTecnicoService(tecnicoRepo)
 	produtoSvc := services.NewProdutoService(produtoRepo)
+	servicoSvc := services.NewServicoService(servicoRepo)
+	osSvc := services.NewOsService(osRepo)
+	controleOsSvc := services.NewControleOsService(controleOsRepo)
 
 	// auth (login/JWT)
 	secret := os.Getenv("JWT_SECRET")
@@ -70,6 +76,9 @@ func (s *Server) Listen() {
 	clienteCtl := controllers.NewClienteController(clienteSvc)
 	tecnicoCtl := controllers.NewTecnicoController(tecnicoSvc)
 	produtoCtl := controllers.NewProdutoController(produtoSvc)
+	servicoCtl := controllers.NewServicoController(servicoSvc)
+	osCtl := controllers.NewOsController(osSvc)
+	controleOsCtl := controllers.NewControleOsController(controleOsSvc)
 
 	r.Group(func(pr chi.Router) {
 		pr.Use(controllers.AuthMiddleware([]byte(secret)))
@@ -77,6 +86,9 @@ func (s *Server) Listen() {
 		clienteCtl.Register(pr)
 		tecnicoCtl.Register(pr)
 		produtoCtl.Register(pr)
+		servicoCtl.Register(pr)
+		osCtl.Register(pr)
+		controleOsCtl.Register(pr)
 	})
 
 	addr := s.cfg.Port
