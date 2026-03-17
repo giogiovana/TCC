@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -48,14 +49,17 @@ func (c *TecnicoController) create(w http.ResponseWriter, r *http.Request) {
 				respondErr(w, http.StatusConflict, database.ErrUsuarioFKInexistente.Error())
 				return
 			}
-			respondErr(w, http.StatusInternalServerError, "erro de banco")
+			respondErr(w, http.StatusInternalServerError, err.Error())
+			fmt.Println("erro de banco: " + e.Error())
 			return
 		default:
 			if err == services.ErrDadosInvalidos || err == sql.ErrNoRows {
 				respondErr(w, http.StatusBadRequest, err.Error())
+				fmt.Println("erro de banco: " + e.Error())
 				return
 			}
 			respondErr(w, http.StatusInternalServerError, err.Error())
+			fmt.Println("erro de banco: " + e.Error())
 			return
 		}
 	}

@@ -3,6 +3,7 @@ package controllers
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -41,6 +42,7 @@ func (c *ControleOsController) create(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		respondErr(w, http.StatusInternalServerError, err.Error())
+		fmt.Println("erro de banco: " + err.Error())
 		return
 	}
 	respond(w, http.StatusCreated, out)

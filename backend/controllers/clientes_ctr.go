@@ -45,7 +45,7 @@ func (c *ClienteController) create(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("cpf_cnpj já cadastrado")
 				return
 			}
-			respondErr(w, http.StatusInternalServerError, "erro de banco")
+			respondErr(w, http.StatusInternalServerError, e.Error())
 			fmt.Println("erro de banco: " + e.Error())
 			return
 		default:

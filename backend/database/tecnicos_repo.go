@@ -53,7 +53,7 @@ func (r *TecnicoRepoPG) Create(ctx context.Context, in models.TecnicoCreate) (mo
 
 	const qTecnico = `
 		insert into tecnicos (id_pessoa, usuario, especialidade, fg_ativo)
-		values ($1, $2, $3, $4, $5)
+		values ($1, $2, $3, $4)
 		returning id_tecnico 
 	`
 	var IdTecnico string
