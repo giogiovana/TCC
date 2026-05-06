@@ -10,7 +10,9 @@ import (
 
 type ControleOsService struct{ repo database.ControleOsRepo }
 
-func NewControleOsService(r database.ControleOsRepo) *ControleOsService { return &ControleOsService{repo: r} }
+func NewControleOsService(r database.ControleOsRepo) *ControleOsService {
+	return &ControleOsService{repo: r}
+}
 
 func (s *ControleOsService) Create(ctx context.Context, in models.ControleOsCreate) (models.ControleOs, error) {
 	if strings.TrimSpace(in.IdOs) == "" || strings.TrimSpace(in.IdTecnico) == "" || strings.TrimSpace(in.IdServico) == "" || strings.TrimSpace(in.Status) == "" {
@@ -24,6 +26,7 @@ func (s *ControleOsService) Create(ctx context.Context, in models.ControleOsCrea
 	in.DataFim = strings.TrimSpace(in.DataFim)
 	in.Status = strings.TrimSpace(in.Status)
 	in.Observacao = strings.TrimSpace(in.Observacao)
+	in.QtdHorasServico = strings.TrimSpace(in.QtdHorasServico)
 
 	return s.repo.Create(ctx, in)
 }
@@ -68,6 +71,9 @@ func (s *ControleOsService) Update(ctx context.Context, idControle string, in mo
 	}
 	if in.Observacao != nil {
 		c.Observacao = strings.TrimSpace(*in.Observacao)
+	}
+	if in.QtdHorasServico != nil {
+		c.QtdHorasServico = strings.TrimSpace(*in.QtdHorasServico)
 	}
 
 	if err := s.repo.Update(ctx, &c); err != nil {
