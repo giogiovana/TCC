@@ -7,7 +7,9 @@ import CadastroProduto from "../pages/produto/CadastroProdutos";
 import ConsultaProduto from "../pages/produto/ConsultaProduto";
 import CadastroTecnico from "../pages/tecnicos/CadastroTecnico";
 import ConsultaTecnico from "../pages/tecnicos/ConsultaTecnico";
+import ConsultaOs from "../pages/ordemservico/ConsultaOs";
 import CadastroOs from "../pages/ordemservico/CadastroOs";
+
 
 export const MainContent = () => {
   return (
@@ -31,7 +33,11 @@ export const MainContent = () => {
               path="/CadastroTecnico/:id_tecnico?"
               element={<CadastroTecnico />}
             />
-            <Route path="/CadastroOs" element={<CadastroOs />} />
+            <Route path="/ConsultaOs" element={<ConsultaOs />} />
+              <Route
+              path="/CadastroOs/:id_os?"
+              element={<CadastroOs />}
+            />
           </Routes>
         </div>
       </Style.Container>

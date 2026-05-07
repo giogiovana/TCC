@@ -58,7 +58,7 @@ export const SideBar = ({ onLogout }: SideBarProps) => {
 
             <li>
               <NavLink
-                to="/CadastroOs"
+                to="/ConsultaOs"
                 className={({ isActive }) => (isActive ? "active" : "")}
               >
                 <MdBuild className="icon" /> Ordens de serviço

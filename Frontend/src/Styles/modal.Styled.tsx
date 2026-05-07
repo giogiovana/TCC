@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+
   position: fixed;
   inset: 0;
   display: grid;
@@ -17,17 +18,18 @@ export const Container = styled.div`
     border-radius: 6px;
     color: #ffffff;
     padding: 2rem;
-    font-size: 18px;
+    font-size: 15px;
+    font-family: "Inter", sans-serif;
   }
 
   .Buttons {
     display: flex;
     gap: 1.2rem;
-    justify-content: flex-end;
+    justify-content: center;
     width: 100%;
   }
 
-  .sim {
+  .transparente {
     background-color: #212121;
     padding: 1rem 1.5rem 1rem 1.5rem;
     border-radius: 6px;
@@ -36,8 +38,26 @@ export const Container = styled.div`
     color: #ffffff;
     cursor: pointer;
   }
+  
+ .transparente:hover {
+    opacity: 0.5;
+  }
 
-  .nao {
+  .vermelho {
+    border: 3px #c72e2e solid;
+    color: #c72e2e;
+    padding: 1rem 1.5rem 1rem 1.5rem;
+    border-radius: 6px;
+    font-family: "Inter", sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  
+ .vermelho:hover {
+    opacity: 0.5;
+  }
+
+  .roxo {
     background-color: #6b7f9e;
     padding: 1rem 1.5rem 1rem 1.5rem;
     border-radius: 6px;
@@ -46,12 +66,11 @@ export const Container = styled.div`
     color: #ffffff;
     cursor: pointer;
   }
-
-  .sim:hover {
+  .roxo:hover {
     opacity: 0.5;
   }
-
-  .nao:hover {
-    opacity: 0.5;
+  
+  label {
+    display: flex;
   }
 `;

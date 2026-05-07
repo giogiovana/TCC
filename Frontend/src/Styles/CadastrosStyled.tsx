@@ -115,6 +115,7 @@ export const Container = styled.div`
     font-size: 15px;
     font-family: "Inter", sans-serif;    cursor: pointer;
     min-width: 150px;
+    max-width: 150px;
     font-weight: 600;
     transition: all 0.2s ease-in-out;
   }
@@ -139,6 +140,11 @@ export const Container = styled.div`
     background-color: #6b7f9e;
     color: #ffffff;
 
+  }
+
+  .btnAdd{
+    background-color: #6b7f9e;
+    color: #ffffff;
   }
 
   button:hover {
@@ -218,12 +224,12 @@ export const Container = styled.div`
   /* tabela */
   .tableContainer{
     max-height: 65vh; 
-    min-height:  65vh; 
+    /* min-height:  65vh;  */
     overflow-y: auto;        
     border-radius: 8px; 
     background-color: #333;
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
+    z-index: 0;
+
   }
   
   .tableContainer table {

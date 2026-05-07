@@ -1,6 +1,5 @@
 import * as Style from "../../../Styles/CadastrosStyled";
 import { GrUserWorker } from "react-icons/gr";
-import { MdPerson } from "react-icons/md";
 import { useForm, Controller } from "react-hook-form";
 import ModalCancel from "../../modais/modalCancel";
 import ModalDelete from "../../modais/modalDelete";

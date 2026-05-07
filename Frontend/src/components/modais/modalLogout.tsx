@@ -15,11 +15,11 @@ export default function Modal({ isOpen, setOpenModal, onLogout }: ModalProps) {
         <p>Tem certeza que deseja sair?</p>
 
         <div className="Buttons">
-          <button className="sim" onClick={onLogout}>
+          <button className="transparente" onClick={onLogout}>
             Sim
           </button>
 
-          <button className="nao" onClick={() => setOpenModal(false)}>
+          <button className="roxo" onClick={() => setOpenModal(false)}>
             Não
           </button>
         </div>

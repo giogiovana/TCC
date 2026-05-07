@@ -15,11 +15,11 @@ export default function Modal({ isOpen, setOpenModal, onConfirm }: ModalProps) {
         <p>Tem certeza que deseja cancelar?</p>
 
         <div className="Buttons">
-          <button className="sim" onClick={onConfirm}>
+          <button className="transparente" onClick={onConfirm}>
             Sim
           </button>
 
-          <button className="nao" onClick={() => setOpenModal(false)}>
+          <button className="roxo" onClick={() => setOpenModal(false)}>
             Não
           </button>
         </div>

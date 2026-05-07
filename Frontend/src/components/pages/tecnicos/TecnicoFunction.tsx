@@ -23,14 +23,14 @@ export async function cadastrarTecnico(tecnico: Tecnico): Promise<boolean> {
   }
 }
 
-export async function consultarTecnico(): Promise<any> {
+export async function consultarTecnico(): Promise<Tecnico[]> {
   try {
     const response = await api.get("/tecnicos");
     console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Erro na consulta de tecnicos:", error);
-    return false;
+    return []; 
   }
 }
 
