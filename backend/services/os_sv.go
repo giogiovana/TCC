@@ -23,6 +23,7 @@ func (s *OsService) Create(ctx context.Context, in models.OsCreate) (models.Os, 
 	in.DataFim = strings.TrimSpace(in.DataFim)
 	in.TotalHorasTrabalhadas = strings.TrimSpace(in.TotalHorasTrabalhadas)
 	in.ValorOs = strings.TrimSpace(in.ValorOs)
+	in.Status = strings.TrimSpace(in.Status)
 	in.Descricao = strings.TrimSpace(in.Descricao)
 	in.Observacao = strings.TrimSpace(in.Observacao)
 
@@ -75,6 +76,10 @@ func (s *OsService) Update(ctx context.Context, idOs string, in models.OsUpdate)
 
 	if in.ValorOs != nil {
 		o.ValorOs = strings.TrimSpace(*in.ValorOs)
+	}
+
+	if in.Status != nil {
+		o.Status = strings.TrimSpace(*in.Status)
 	}
 
 	if in.Descricao != nil {

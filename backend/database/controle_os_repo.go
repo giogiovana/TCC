@@ -21,9 +21,9 @@ func NewControleOsRepo(db *DAO) *ControleOsRepoPG { return &ControleOsRepoPG{db:
 func (r *ControleOsRepoPG) Create(ctx context.Context, in models.ControleOsCreate) (models.ControleOs, error) {
 	const q = `
 	insert into controle_os
-		(id_os, id_tecnico, id_servico, data_inicio, data_fim, status, observacao, qtd_horas_servico)
+		(id_os, id_tecnico, id_servico, data_inicio, data_fim, observacao, qtd_horas_servico)
 	values
-		($1::int, $2::int, $3::int, coalesce(nullif($4,'')::date, now()::date), nullif($5,'')::date, $6::int2, nullif($7,''), nullif($8,'')::real)
+		($1::int, $2::int, $3::int, coalesce(nullif($4,'')::date, now()::date), nullif($5,'')::date, nullif($6,''), nullif($7,'')::real)
 	returning id_controle
 	`
 
@@ -36,7 +36,6 @@ func (r *ControleOsRepoPG) Create(ctx context.Context, in models.ControleOsCreat
 		in.IdServico,
 		in.DataInicio,
 		in.DataFim,
-		in.Status,
 		in.Observacao,
 		in.QtdHorasServico,
 	).Scan(&idControle); err != nil {
@@ -50,7 +49,6 @@ func (r *ControleOsRepoPG) Create(ctx context.Context, in models.ControleOsCreat
 		IdServico:       in.IdServico,
 		DataInicio:      in.DataInicio,
 		DataFim:         in.DataFim,
-		Status:          in.Status,
 		Observacao:      in.Observacao,
 		QtdHorasServico: in.QtdHorasServico,
 	}
@@ -67,7 +65,6 @@ func (r *ControleOsRepoPG) GetById(ctx context.Context, id string) (*models.Cont
 		id_servico::text as id_servico,
 		data_inicio::text as data_inicio,
 		coalesce(data_fim::text, '') as data_fim,
-		status::text as status,
 		coalesce(observacao, '') as observacao,
 		coalesce(qtd_horas_servico::text, '') as qtd_horas_servico
 	from controle_os
@@ -92,7 +89,6 @@ func (r *ControleOsRepoPG) List(ctx context.Context, limit, offset int) ([]model
 		id_servico::text as id_servico,
 		data_inicio::text as data_inicio,
 		coalesce(data_fim::text, '') as data_fim,
-		status::text as status,
 		coalesce(observacao, '') as observacao,
 		coalesce(qtd_horas_servico::text, '') as qtd_horas_servico
 	from controle_os
@@ -115,9 +111,8 @@ func (r *ControleOsRepoPG) Update(ctx context.Context, in *models.ControleOs) er
 		id_servico = coalesce(nullif($4,'')::int, id_servico),
 		data_inicio = coalesce(nullif($5,'')::date, data_inicio),
 		data_fim = coalesce(nullif($6,'')::date, data_fim),
-		status = coalesce(nullif($7,'')::int2, status),
-		observacao = coalesce(nullif($8,''), observacao),
-		qtd_horas_servico = coalesce(nullif($9,'')::real, qtd_horas_servico)
+		observacao = coalesce(nullif($7,''), observacao),
+		qtd_horas_servico = coalesce(nullif($8,'')::real, qtd_horas_servico)
 	where id_controle = $1
 	returning
 		id_controle::text as id_controle,
@@ -126,7 +121,6 @@ func (r *ControleOsRepoPG) Update(ctx context.Context, in *models.ControleOs) er
 		id_servico::text as id_servico,
 		data_inicio::text as data_inicio,
 		coalesce(data_fim::text, '') as data_fim,
-		status::text as status,
 		coalesce(observacao, '') as observacao,
 		coalesce(qtd_horas_servico::text, '') as qtd_horas_servico
 	`
@@ -140,7 +134,6 @@ func (r *ControleOsRepoPG) Update(ctx context.Context, in *models.ControleOs) er
 		in.IdServico,
 		in.DataInicio,
 		in.DataFim,
-		in.Status,
 		in.Observacao,
 		in.QtdHorasServico,
 	).StructScan(in)
