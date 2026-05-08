@@ -21,9 +21,9 @@ func NewOsRepo(db *DAO) *OsRepoPG { return &OsRepoPG{db: db} }
 func (r *OsRepoPG) Create(ctx context.Context, in models.OsCreate) (models.Os, error) {
 	const q = `
 	insert into ordens_servico
-		(usuario, id_cliente, id_produto, data_incio, data_fim, total_horas_trabalhadas, valor_os, descricao, observacao)
+		(usuario, id_cliente, id_produto, data_incio, data_fim, total_horas_trabalhadas, valor_os, status, descricao, observacao)
 	values
-		($1, $2::int, $3::int, coalesce(nullif($4,'')::date, now()::date), nullif($5,'')::date, nullif($6,'')::numeric, nullif($7,'')::money, $8, nullif($9,''))
+		($1, $2::int, $3::int, coalesce(nullif($4,'')::date, now()::date), nullif($5,'')::date, nullif($6,'')::numeric, nullif($7,'')::money, nullif($8,'')::int2, $9, nullif($10,''))
 	returning id_os
 	`
 
@@ -38,6 +38,7 @@ func (r *OsRepoPG) Create(ctx context.Context, in models.OsCreate) (models.Os, e
 		in.DataFim,
 		in.TotalHorasTrabalhadas,
 		in.ValorOs,
+		in.Status,
 		in.Descricao,
 		in.Observacao,
 	).Scan(&idOs); err != nil {
@@ -53,6 +54,7 @@ func (r *OsRepoPG) Create(ctx context.Context, in models.OsCreate) (models.Os, e
 		DataFim:               in.DataFim,
 		TotalHorasTrabalhadas: in.TotalHorasTrabalhadas,
 		ValorOs:               in.ValorOs,
+		Status:                in.Status,
 		Descricao:             in.Descricao,
 		Observacao:            in.Observacao,
 	}
@@ -62,7 +64,18 @@ func (r *OsRepoPG) Create(ctx context.Context, in models.OsCreate) (models.Os, e
 
 func (r *OsRepoPG) GetById(ctx context.Context, id string) (*models.Os, error) {
 	const q = `
-	select id_os, usuario, id_cliente, id_produto, data_incio, data_fim, total_horas_trabalhadas, valor_os, descricao, observacao
+	select
+		id_os::text as id_os,
+		usuario,
+		id_cliente::text as id_cliente,
+		id_produto::text as id_produto,
+		data_incio::text as data_incio,
+		coalesce(data_fim::text, '') as data_fim,
+		coalesce(total_horas_trabalhadas::text, '') as total_horas_trabalhadas,
+		coalesce(valor_os::text, '') as valor_os,
+		coalesce(status::text, '') as status,
+		descricao,
+		coalesce(observacao, '') as observacao
 	from ordens_servico
 	where id_os = $1
 	`
@@ -78,7 +91,18 @@ func (r *OsRepoPG) List(ctx context.Context, limit, offset int) ([]models.Os, er
 		limit = 50
 	}
 	const q = `
-	select id_os, usuario, id_cliente, id_produto, data_incio, data_fim, total_horas_trabalhadas, valor_os, descricao, observacao
+	select
+		id_os::text as id_os,
+		usuario,
+		id_cliente::text as id_cliente,
+		id_produto::text as id_produto,
+		data_incio::text as data_incio,
+		coalesce(data_fim::text, '') as data_fim,
+		coalesce(total_horas_trabalhadas::text, '') as total_horas_trabalhadas,
+		coalesce(valor_os::text, '') as valor_os,
+		coalesce(status::text, '') as status,
+		descricao,
+		coalesce(observacao, '') as observacao
 	from ordens_servico
 	order by id_os
 	limit $1 offset $2
@@ -101,10 +125,22 @@ func (r *OsRepoPG) Update(ctx context.Context, in *models.Os) error {
 		data_fim = coalesce(nullif($6,'')::date, data_fim),
 		total_horas_trabalhadas = coalesce(nullif($7,'')::numeric, total_horas_trabalhadas),
 		valor_os = coalesce(nullif($8,'')::money, valor_os),
-		descricao = coalesce(nullif($9,''), descricao),
-		observacao = coalesce(nullif($10,''), observacao)
+		status = coalesce(nullif($9,'')::int2, status),
+		descricao = coalesce(nullif($10,''), descricao),
+		observacao = coalesce(nullif($11,''), observacao)
 	where id_os = $1
-	returning id_os, usuario, id_cliente, id_produto, data_incio, data_fim, total_horas_trabalhadas, valor_os, descricao, observacao
+	returning
+		id_os::text as id_os,
+		usuario,
+		id_cliente::text as id_cliente,
+		id_produto::text as id_produto,
+		data_incio::text as data_incio,
+		coalesce(data_fim::text, '') as data_fim,
+		coalesce(total_horas_trabalhadas::text, '') as total_horas_trabalhadas,
+		coalesce(valor_os::text, '') as valor_os,
+		coalesce(status::text, '') as status,
+		descricao,
+		coalesce(observacao, '') as observacao
 	`
 
 	return r.db.DB().QueryRowxContext(
@@ -118,6 +154,7 @@ func (r *OsRepoPG) Update(ctx context.Context, in *models.Os) error {
 		in.DataFim,
 		in.TotalHorasTrabalhadas,
 		in.ValorOs,
+		in.Status,
 		in.Descricao,
 		in.Observacao,
 	).StructScan(in)

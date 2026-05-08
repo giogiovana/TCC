@@ -15,7 +15,7 @@ func NewControleOsService(r database.ControleOsRepo) *ControleOsService {
 }
 
 func (s *ControleOsService) Create(ctx context.Context, in models.ControleOsCreate) (models.ControleOs, error) {
-	if strings.TrimSpace(in.IdOs) == "" || strings.TrimSpace(in.IdTecnico) == "" || strings.TrimSpace(in.IdServico) == "" || strings.TrimSpace(in.Status) == "" {
+	if strings.TrimSpace(in.IdOs) == "" || strings.TrimSpace(in.IdTecnico) == "" || strings.TrimSpace(in.IdServico) == "" {
 		return models.ControleOs{}, ErrDadosInvalidos
 	}
 
@@ -24,7 +24,6 @@ func (s *ControleOsService) Create(ctx context.Context, in models.ControleOsCrea
 	in.IdServico = strings.TrimSpace(in.IdServico)
 	in.DataInicio = strings.TrimSpace(in.DataInicio)
 	in.DataFim = strings.TrimSpace(in.DataFim)
-	in.Status = strings.TrimSpace(in.Status)
 	in.Observacao = strings.TrimSpace(in.Observacao)
 	in.QtdHorasServico = strings.TrimSpace(in.QtdHorasServico)
 
@@ -65,9 +64,6 @@ func (s *ControleOsService) Update(ctx context.Context, idControle string, in mo
 	}
 	if in.DataFim != nil {
 		c.DataFim = strings.TrimSpace(*in.DataFim)
-	}
-	if in.Status != nil {
-		c.Status = strings.TrimSpace(*in.Status)
 	}
 	if in.Observacao != nil {
 		c.Observacao = strings.TrimSpace(*in.Observacao)
