@@ -19,6 +19,7 @@ func (c *OsController) Register(r chi.Router) {
 	r.Route("/ordens-servico", func(r chi.Router) {
 		r.Post("/", c.create)
 		r.Get("/", c.list)
+		r.Get("/{id}/itens", c.getWithItens)
 		r.Get("/{id}", c.get)
 		r.Put("/{id}", c.update)
 		r.Delete("/{id}", c.delete)
@@ -47,6 +48,20 @@ func (c *OsController) create(w http.ResponseWriter, r *http.Request) {
 func (c *OsController) get(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	out, err := c.svc.GetById(r.Context(), id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			respondErr(w, 404, "não encontrado")
+			return
+		}
+		respondErr(w, 500, err.Error())
+		return
+	}
+	respond(w, 200, out)
+}
+
+func (c *OsController) getWithItens(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	out, err := c.svc.GetByIdComItens(r.Context(), id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			respondErr(w, 404, "não encontrado")

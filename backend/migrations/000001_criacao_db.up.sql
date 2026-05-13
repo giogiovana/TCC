@@ -82,7 +82,6 @@ create table servicos (
 
 create table ordens_servico (
 	id_os serial,
-	usuario varchar(25) not null,
 	id_cliente int not null,
 	id_produto int not null,
 	data_incio date default now(),
@@ -92,15 +91,12 @@ create table ordens_servico (
 	descricao varchar(50) not null,
 	observacao varchar(255),
 	constraint pk_os primary key (id_os),
-	constraint fk_os_01 foreign key (usuario)
-	references usuarios (login),
 	constraint fk_os_02 foreign key (id_cliente)
 	references clientes (id_cliente),
 	constraint fk_os_03 foreign key (id_produto)
 	references produtos (id_produto)
 );
 
-create index idx_os_01 on ordens_servico (usuario);
 create index idx_os_02 on ordens_servico (id_cliente);
 create index idx_os_03 on ordens_servico (id_produto);
 

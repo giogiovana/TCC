@@ -59,7 +59,7 @@ func (s *Server) Listen() {
 	tecnicoSvc := services.NewTecnicoService(tecnicoRepo)
 	produtoSvc := services.NewProdutoService(produtoRepo)
 	servicoSvc := services.NewServicoService(servicoRepo)
-	osSvc := services.NewOsService(osRepo)
+	osSvc := services.NewOsService(osRepo, controleOsRepo)
 	controleOsSvc := services.NewControleOsService(controleOsRepo)
 
 	// auth (login/JWT)

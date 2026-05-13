@@ -12,7 +12,7 @@ type ControleOsCreate struct {
 
 type ControleOs struct {
 	IdControle      string `db:"id_controle" json:"id_controle"`
-	IdOs            string `db:"id_os" json:"id_os"`
+	IdOs            string `db:"id_os" json:"-"`
 	IdTecnico       string `db:"id_tecnico" json:"id_tecnico"`
 	IdServico       string `db:"id_servico" json:"id_servico"`
 	DataInicio      string `db:"data_inicio" json:"data_inicio"`
