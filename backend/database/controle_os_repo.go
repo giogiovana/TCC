@@ -10,6 +10,7 @@ type ControleOsRepo interface {
 	Create(ctx context.Context, in models.ControleOsCreate) (models.ControleOs, error)
 	GetById(ctx context.Context, id string) (*models.ControleOs, error)
 	List(ctx context.Context, limit, offset int) ([]models.ControleOs, error)
+	ListByOsId(ctx context.Context, idOs string) ([]models.ControleOs, error)
 	Update(ctx context.Context, in *models.ControleOs) error
 	Delete(ctx context.Context, id string) error
 }
@@ -98,6 +99,29 @@ func (r *ControleOsRepoPG) List(ctx context.Context, limit, offset int) ([]model
 
 	var out []models.ControleOs
 	if err := r.db.DB().SelectContext(ctx, &out, q, limit, offset); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (r *ControleOsRepoPG) ListByOsId(ctx context.Context, idOs string) ([]models.ControleOs, error) {
+	const q = `
+	select
+		id_controle::text as id_controle,
+		id_os::text as id_os,
+		id_tecnico::text as id_tecnico,
+		id_servico::text as id_servico,
+		data_inicio::text as data_inicio,
+		coalesce(data_fim::text, '') as data_fim,
+		coalesce(observacao, '') as observacao,
+		coalesce(qtd_horas_servico::text, '') as qtd_horas_servico
+	from controle_os
+	where id_os = $1
+	order by id_controle
+	`
+
+	var out []models.ControleOs
+	if err := r.db.DB().SelectContext(ctx, &out, q, idOs); err != nil {
 		return nil, err
 	}
 	return out, nil
