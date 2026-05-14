@@ -5,21 +5,23 @@ import { customSelectStyles } from "../../../Styles/customSelectStyles";
 import { MdInventory2 } from "react-icons/md";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import ModalCancel from "../../modais/modalCancel";
-import ModalDelete from "../../modais/modalDelete";
-import ModalServico from "../../modais/modalServico";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { cadastrarOrdemServico, consultarOrdemServicoPorId, excluirOrdemServico, } from "./OsFunction";
-import { cabecalhoVazio, Cabecalho } from "../../../Models/cabecalhoOs";
 import { toast } from "react-toastify";
 
 import { Cliente } from "../../../Models/cliente";
 import { Produto } from "../../../Models/produto";
+import { Servico } from "../../../Models/servico";
+import { cabecalhoVazio, Cabecalho } from "../../../Models/cabecalhoOs";
 
-// 🔥 IMPORTAR SUAS FUNÇÕES DE CONSULTA
+import ModalCancel from "../../modais/modalCancel";
+import ModalDelete from "../../modais/modalDelete";
+import ModalServico from "../../modais/modalServico";
+
 import { consultarCliente } from "../cliente/Cliente.Function";
 import { consultarProduto } from "../produto/ProdutoFunction";
+import { consultarServico, cadastrarOrdemServico, consultarOrdemServicoPorId, excluirOrdemServico, } from "./OsFunction";
+
 
 type ErrorMessageProps = {
   error?: string;
@@ -39,6 +41,7 @@ export function CadastroOs() {
 
   const [produto, setProduto] = useState<Produto[]>([]);
   const [cliente, setCliente] = useState<Cliente[]>([]);
+  const [servico, setServico] = useState<Servico[]>([]);
 
   const navigate = useNavigate();
 
@@ -48,6 +51,7 @@ export function CadastroOs() {
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<Cabecalho>({
     defaultValues: cabecalhoVazio,
@@ -60,7 +64,6 @@ export function CadastroOs() {
     name: "itens",
   });
 
-  // 🔥 carregar OS
   useEffect(() => {
     const carregarOrdem = async () => {
       if (id_os) {
@@ -76,18 +79,60 @@ export function CadastroOs() {
     carregarOrdem();
   }, [id_os, reset]);
 
-  // 🔥 carregar selects
   useEffect(() => {
     const carregarDados = async () => {
       const produtos = await consultarProduto();
       const clientes = await consultarCliente();
+      const servicos = await consultarServico();
+
 
       setProduto(produtos || []);
       setCliente(clientes || []);
+      setServico(servicos || []);
+
     };
 
     carregarDados();
   }, []);
+
+  useEffect(() => {
+
+  // TOTAL HORAS
+  const totalHoras = fields.reduce((acc, item) => {
+    return acc + Number(item.qtd_horas_servico || 0);
+  }, 0);
+
+  setValue(
+    "total_horas_trabalhadas",
+    totalHoras.toFixed(2)
+  );
+
+  // TOTAL VALOR
+  const totalValor = fields.reduce((acc, item) => {
+
+    const servicoEncontrado = servico.find(
+      (s) => String(s.id_servico) === String(item.id_servico)
+    );
+
+    const valorHora = Number(
+      String(servicoEncontrado?.valor_servico || "0")
+        .replace("R$", "")
+        .replace(",", ".")
+        .trim()
+    );
+
+    const horas = Number(item.qtd_horas_servico || 0);
+
+    return acc + (valorHora * horas);
+
+  }, 0);
+
+  setValue(
+    "valor_os",
+    totalValor.toFixed(2)
+  );
+
+}, [fields, servico, setValue]);
 
   const produtoOptions = produto.map((p) => ({
     value: p.id_produto,
@@ -98,17 +143,49 @@ export function CadastroOs() {
     value: c.id_cliente,
     label: c.nome_fantasia,
   }));
+  
+
+  const converterHoraParaDecimal = (hora: string) => {
+  const [h, m] = hora.split(":").map(Number);
+  return (h + m / 60).toFixed(2);
+  };
+
+  const calcularTotalHoras = () => {
+
+  const total = fields.reduce((acc, item) => {
+    return acc + Number(item.qtd_horas_servico || 0);
+  }, 0);
+  return total.toFixed(2);
+  };
 
   const onSubmit = async (dados: Cabecalho) => {
-    const sucesso = await cadastrarOrdemServico(dados);
 
-    if (sucesso) {
-      toast.success("Ordem de serviço salva com sucesso!");
-      navigate("/consultaOs");
-    } else {
-      toast.error("Erro ao salvar ordem de serviço :(");
-    }
+  const dadosTratados: Cabecalho = {
+    ...dados,
+
+    usuario: "admin",
+    status: "1",
+    id_cliente: String(dados.id_cliente),
+    id_produto: String(dados.id_produto),
+
+    valor_os: String(dados.valor_os),
+
+    total_horas_trabalhadas: String(
+      dados.total_horas_trabalhadas
+    ),
   };
+
+  console.log("Payload enviado:", dadosTratados);
+
+  const sucesso = await cadastrarOrdemServico(dadosTratados);
+
+  if (sucesso) {
+    toast.success("Ordem de serviço salva com sucesso!");
+    navigate("/consultaOs");
+  } else {
+    toast.error("Erro ao salvar ordem de serviço :(");
+  }
+};
 
   const handleExcluir = async (dados: Cabecalho) => {
     const sucesso = await excluirOrdemServico(dados);
@@ -134,7 +211,6 @@ export function CadastroOs() {
             <input className="idInput" readOnly {...register("id_os")} />
           </div>
 
-          {/* ✅ CLIENTE */}
           <div>
             <label>Cliente</label>
 
@@ -147,11 +223,11 @@ export function CadastroOs() {
                   options={clienteOptions}
                   value={
                     clienteOptions.find(
-                      (opt) => opt.value === field.value
+                      (opt) => String(opt.value) === String(field.value)
                     ) || null
                   }
                   onChange={(selected) =>
-                    field.onChange(Number(selected?.value))
+                    field.onChange(String(selected?.value))
                   }
                   isSearchable
                   placeholder="Selecione um cliente"
@@ -160,7 +236,6 @@ export function CadastroOs() {
             />
           </div>
 
-          {/* ✅ PRODUTO */}
           <div>
             <label>Produto</label>
 
@@ -173,18 +248,19 @@ export function CadastroOs() {
                   options={produtoOptions}
                   value={
                     produtoOptions.find(
-                      (opt) => opt.value === field.value
+                      (opt) => String(opt.value) === String(field.value)
                     ) || null
                   }
                   onChange={(selected) =>
-                    field.onChange(Number(selected?.value))
+                    field.onChange(String(selected?.value))
                   }
                   isSearchable
                   placeholder="Selecione um produto"
                 />
               )}
             />
-          </div>          
+          </div>        
+            
 
           <div>
             <label>Início</label>
@@ -202,22 +278,25 @@ export function CadastroOs() {
 
           <div>
             <label>Horas trabalhadas</label>
-            <input
+             <input
               className="input"
-              {...register("total_horas_trabalhadas")}
+              value={watch("total_horas_trabalhadas")}
+              readOnly
             />
           </div>
 
-          <div>
-            <label>Valor total</label>
-            <input className="input" {...register("valor_os")} />
-          </div>
+          <input
+            className="input"
+            value={watch("valor_os")}
+            readOnly
+          />
 
           <div>
             <label>Descrição</label>
             <input className="obsInput" {...register("descricao")} />
           </div>
         </div>
+      
 
         <button
           type="button"

@@ -18,30 +18,24 @@ export async function cadastrarOrdemServico(cabecalho: Cabecalho): Promise<boole
     return response.status === 201;
 
   } catch (error:any) {
-    console.error("❌ ERRO AO SALVAR ORDEM DE SERVIÇO");
+    console.error("ERRO AO SALVAR ORDEM DE SERVIÇO");
 
   if (error.response) {
-    // 🔴 Backend respondeu (400, 500 etc)
     console.error("Status:", error.response.status);
     console.error("Mensagem:", error.response.data);
-    console.error("URL:", error.config?.url);
-    console.error("Método:", error.config?.method);
-    console.error("Payload enviado:", error.config?.data);
+    console.error(JSON.parse(error.config?.data));
   } else if (error.request) {
-    // 🟡 Request foi feita mas sem resposta
     console.error("Sem resposta do servidor:", error.request);
   } else {
-    // ⚫ Erro ao montar a request
     console.error("Erro:", error.message);
   }
-
     return false;
   }
 }
 
 export async function consultarOrdemServico(): Promise<any> {
   try {
-    const response = await api.get("/ordemservicos");
+    const response = await api.get("/ordens-servico");
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -58,11 +52,11 @@ export async function excluirOrdemServico(ordemservico: Cabecalho): Promise<bool
     }
 
     try {
-    const response = await api.delete(`/ordemservicos/${ordemservico.id_os}`);
+    const response = await api.delete(`/ordens-servico/${ordemservico.id_os}`);
     return response.status === 200 || response.status === 204;
 
   } catch (error) {
-    console.error("Erro na exclusão de ordemservicos:", error);
+    console.error("Erro na exclusão de ordens de serviço:", error);
     return false;
   }
 }
@@ -71,7 +65,7 @@ export async function consultarOrdemServicoPorId(
   id_os: string,
 ): Promise<Cabecalho | false> {
   try {
-    const response = await api.get(`/ordemservicos/${id_os}`);
+    const response = await api.get(`/ordens-servico/${id_os}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -87,7 +81,18 @@ export async function consultarServico(): Promise<any> {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    console.error("Erro na consulta de ordemservicos:", error);
+    console.error("Erro na consulta de ordens de serviço:", error);
+    return false;
+  }
+}
+
+export async function consultarStatus(): Promise<any> {
+  try {
+    const response = await api.get("/servicos");
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Erro na consulta de ordens de serviço:", error);
     return false;
   }
 }

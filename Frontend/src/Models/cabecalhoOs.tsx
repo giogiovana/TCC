@@ -11,6 +11,7 @@ export type Cabecalho = {
 	valor_os: string;
 	descricao: string;
     observacao: string;
+	status: string;
     itens: Itens[];
 };
 
@@ -26,5 +27,7 @@ export const cabecalhoVazio: Cabecalho = {
 	descricao: "",
     observacao: "",
     itens: [],
+    status: "",
+
 };
 

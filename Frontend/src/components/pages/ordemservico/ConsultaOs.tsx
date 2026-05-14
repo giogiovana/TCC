@@ -97,9 +97,9 @@ export const consultarOs = () => {
                         style={{ cursor: "pointer" }}
                       >
                         <td>{ordemservico.id_os}</td>
-                        <td>{ordemservico.id_cliente}</td>
+                        <td>{ordemservico.descricao}</td>
                         <td>{ordemservico.data_inicio}</td>
-
+                        <td>{ordemservico.status}</td>
                       </tr>
                     ))
                   ) : (

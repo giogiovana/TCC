@@ -1,7 +1,7 @@
 import * as Style from "../../Styles/modalServ.Styles";
 import { customSelectStyles } from "../../Styles/customSelectStyles";
 
-import { Itens } from "../../Models/itensOs";
+import { Itens, itensVazios } from "../../Models/itensOs";
 import { Servico } from "../../Models/servico";
 import { Tecnico } from "../../Models/tecnico";
 
@@ -28,16 +28,6 @@ type ModalProps = {
   itemEditando?: Itens | null;
 };
 
-const itemVazio: Itens = {
-  id_os: "",
-  id_tecnico: undefined,
-  id_servico: undefined,
-  data_inicio: "",
-  data_fim: "",
-  observacao: "",
-  total_horas_trabalhadas: 0
-};
-
 export default function ModalServico({
   isOpen,
   onClose,
@@ -56,7 +46,7 @@ export default function ModalServico({
     watch,
     formState: { errors },
   } = useForm<Itens>({
-    defaultValues: itemVazio,
+    defaultValues: itensVazios,
   });
 
   const idServicoSelecionado = watch("id_servico");
@@ -79,7 +69,7 @@ useEffect(() => {
     if (itemEditando) {
       reset(itemEditando);
     } else {
-      reset(itemVazio);
+      reset(itensVazios);
     }
   }, [itemEditando, reset]);
 
@@ -95,21 +85,28 @@ useEffect(() => {
     label: t.nome_fantasia,
   }));
 
-  const onSubmit = (data: Itens) => {
-    const servicoSelecionado = servico.find(
-      (s) => s.id_servico === String(data.id_servico)
-    );
-
-    const itemFinal: Itens = {
-      ...data,
-      id_servico: Number(data.id_servico),
-      id_tecnico: Number(data.id_tecnico),
-    };
-
-    onSave(itemFinal);
-    reset(itemVazio)
-    onClose();
+  const converterHoraParaDecimal = (hora: string) => {
+  const [h, m] = hora.split(":").map(Number);
+  return (h + m / 60).toFixed(2);
   };
+
+  const onSubmit = (data: Itens) => {
+
+  const itemFinal: Itens = {
+    ...data,
+
+    id_servico: String(data.id_servico),
+    id_tecnico: String(data.id_tecnico),
+
+    qtd_horas_servico: converterHoraParaDecimal(
+      String(data.qtd_horas_servico)
+    ),
+  };
+
+  onSave(itemFinal);
+  reset(itensVazios);
+  onClose();
+};
 
   return (
     <Style.Container>
@@ -121,7 +118,6 @@ useEffect(() => {
         
           <div className="sessao2">
 
-            {/* SERVIÇO */}
             <div>
               <label>Serviço</label>
 
@@ -145,7 +141,7 @@ useEffect(() => {
 
                         setServicoSelecionado(serv || null);
 
-                        field.onChange(selected?.value);
+                        field.onChange(String(selected?.value));
                      } 
                     }
                     isSearchable
@@ -155,7 +151,6 @@ useEffect(() => {
               {errors.id_servico && <p>{errors.id_servico.message}</p>}
             </div>
 
-            {/* TECNICO */}
             <div>
               <label>Técnico</label>
 
@@ -173,7 +168,7 @@ useEffect(() => {
                       ) || null
                     }
                     onChange={(selected) =>
-                      field.onChange(Number(selected?.value))
+                      field.onChange(String(selected?.value))
                     }
                     isSearchable
                   />
@@ -182,7 +177,6 @@ useEffect(() => {
               {errors.id_tecnico && <p>{errors.id_tecnico.message}</p>}
             </div>
 
-            {/* DATAS */}
             <div className="dates">
               <div>
                 <label>Início</label>
@@ -223,12 +217,11 @@ useEffect(() => {
             <input
               type="time"
               className="date-input"
-              {...register("total_horas_trabalhadas", )}
+              {...register("qtd_horas_servico", )}
             />
           </div>
           </div>
 
-            {/* OBS */}
             <div>
               <label>Observação</label>
               <input 
@@ -236,12 +229,11 @@ useEffect(() => {
               {...register("observacao")} />
             </div>
 
-            {/* BOTÕES */}
             <div className="buttons">
               <button 
               type="button" 
                onClick={() => {
-                reset(itemVazio);
+                reset(itensVazios);
                 onClose();
               }}
               className="vermelho"
