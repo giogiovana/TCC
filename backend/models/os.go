@@ -11,6 +11,8 @@ type OsCreate struct {
 	Status                string `json:"status"`
 	Descricao             string `json:"descricao"`
 	Observacao            string `json:"observacao"`
+
+	
 }
 
 type Os struct {
