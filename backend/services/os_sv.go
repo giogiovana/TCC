@@ -8,15 +8,19 @@ import (
 	"github.com/giogiovana/TCC/models"
 )
 
-type OsService struct{ repo database.OsRepo }
+type OsService struct {
+	repo           database.OsRepo
+	controleOsRepo database.ControleOsRepo
+}
 
-func NewOsService(r database.OsRepo) *OsService { return &OsService{repo: r} }
+func NewOsService(r database.OsRepo, controleOsRepo database.ControleOsRepo) *OsService {
+	return &OsService{repo: r, controleOsRepo: controleOsRepo}
+}
 
 func (s *OsService) Create(ctx context.Context, in models.OsCreate) (models.Os, error) {
-	if strings.TrimSpace(in.Usuario) == "" || strings.TrimSpace(in.IdCliente) == "" || strings.TrimSpace(in.IdProduto) == "" || strings.TrimSpace(in.Descricao) == "" {
+	if strings.TrimSpace(in.IdCliente) == "" || strings.TrimSpace(in.IdProduto) == "" || strings.TrimSpace(in.Descricao) == "" {
 		return models.Os{}, ErrDadosInvalidos
 	}
-	in.Usuario = strings.TrimSpace(in.Usuario)
 	in.IdCliente = strings.TrimSpace(in.IdCliente)
 	in.IdProduto = strings.TrimSpace(in.IdProduto)
 	in.DataInicio = strings.TrimSpace(in.DataInicio)
@@ -38,6 +42,23 @@ func (s *OsService) GetById(ctx context.Context, id string) (models.Os, error) {
 	return *out, nil
 }
 
+func (s *OsService) GetByIdComItens(ctx context.Context, id string) (models.OsComControles, error) {
+	os, err := s.GetById(ctx, id)
+	if err != nil {
+		return models.OsComControles{}, err
+	}
+
+	controles, err := s.controleOsRepo.ListByOsId(ctx, id)
+	if err != nil {
+		return models.OsComControles{}, err
+	}
+
+	return models.OsComControles{
+		Os:        os,
+		Controles: controles,
+	}, nil
+}
+
 func (s *OsService) List(ctx context.Context, limit, offset int) ([]models.Os, error) {
 	out, err := s.repo.List(ctx, limit, offset)
 	if err != nil {
@@ -49,10 +70,6 @@ func (s *OsService) List(ctx context.Context, limit, offset int) ([]models.Os, e
 func (s *OsService) Update(ctx context.Context, idOs string, in models.OsUpdate) (models.Os, error) {
 	var o models.Os
 	o.IdOs = idOs
-
-	if in.Usuario != nil {
-		o.Usuario = strings.TrimSpace(*in.Usuario)
-	}
 
 	if in.IdCliente != nil {
 		o.IdCliente = strings.TrimSpace(*in.IdCliente)

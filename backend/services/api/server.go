@@ -53,14 +53,16 @@ func (s *Server) Listen() {
 	servicoRepo := database.NewServicoRepo(s.db)
 	osRepo := database.NewOsRepo(s.db)
 	controleOsRepo := database.NewControleOsRepo(s.db)
+	statusOsRepo := database.NewStatusOsRepo(s.db)
 
 	usuarioSvc := services.NewUsuarioService(usuarioRepo)
 	clienteSvc := services.NewClienteService(clienteRepo)
 	tecnicoSvc := services.NewTecnicoService(tecnicoRepo)
 	produtoSvc := services.NewProdutoService(produtoRepo)
 	servicoSvc := services.NewServicoService(servicoRepo)
-	osSvc := services.NewOsService(osRepo)
+	osSvc := services.NewOsService(osRepo, controleOsRepo)
 	controleOsSvc := services.NewControleOsService(controleOsRepo)
+	statusOsSvc := services.NewStatusOsService(statusOsRepo)
 
 	// auth (login/JWT)
 	secret := os.Getenv("JWT_SECRET")
@@ -79,6 +81,7 @@ func (s *Server) Listen() {
 	servicoCtl := controllers.NewServicoController(servicoSvc)
 	osCtl := controllers.NewOsController(osSvc)
 	controleOsCtl := controllers.NewControleOsController(controleOsSvc)
+	statusOsCtl := controllers.NewStatusOsController(statusOsSvc)
 
 	r.Group(func(pr chi.Router) {
 		pr.Use(controllers.AuthMiddleware([]byte(secret)))
@@ -89,6 +92,7 @@ func (s *Server) Listen() {
 		servicoCtl.Register(pr)
 		osCtl.Register(pr)
 		controleOsCtl.Register(pr)
+		statusOsCtl.Register(pr)
 	})
 
 	addr := s.cfg.Port

@@ -46,6 +46,14 @@ func (s *ControleOsService) List(ctx context.Context, limit, offset int) ([]mode
 	return out, nil
 }
 
+func (s *ControleOsService) ListByOsId(ctx context.Context, idOs string) ([]models.ControleOs, error) {
+	idOs = strings.TrimSpace(idOs)
+	if idOs == "" {
+		return nil, ErrDadosInvalidos
+	}
+	return s.repo.ListByOsId(ctx, idOs)
+}
+
 func (s *ControleOsService) Update(ctx context.Context, idControle string, in models.ControleOsUpdate) (models.ControleOs, error) {
 	var c models.ControleOs
 	c.IdControle = idControle

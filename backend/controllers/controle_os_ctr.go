@@ -63,6 +63,21 @@ func (c *ControleOsController) get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *ControleOsController) list(w http.ResponseWriter, r *http.Request) {
+	idOs := r.URL.Query().Get("id_os")
+	if idOs != "" {
+		items, err := c.svc.ListByOsId(r.Context(), idOs)
+		if err != nil {
+			if err == services.ErrDadosInvalidos {
+				respondErr(w, http.StatusBadRequest, err.Error())
+				return
+			}
+			respondErr(w, 500, err.Error())
+			return
+		}
+		respond(w, 200, items)
+		return
+	}
+
 	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
 	offset, _ := strconv.Atoi(r.URL.Query().Get("offset"))
 	items, err := c.svc.List(r.Context(), limit, offset)

@@ -21,9 +21,9 @@ func NewOsRepo(db *DAO) *OsRepoPG { return &OsRepoPG{db: db} }
 func (r *OsRepoPG) Create(ctx context.Context, in models.OsCreate) (models.Os, error) {
 	const q = `
 	insert into ordens_servico
-		(usuario, id_cliente, id_produto, data_incio, data_fim, total_horas_trabalhadas, valor_os, status, descricao, observacao)
+		(id_cliente, id_produto, data_inicio, data_fim, total_horas_trabalhadas, valor_os, status, descricao, observacao)
 	values
-		($1, $2::int, $3::int, coalesce(nullif($4,'')::date, now()::date), nullif($5,'')::date, nullif($6,'')::numeric, nullif($7,'')::money, nullif($8,'')::int2, $9, nullif($10,''))
+		($1::int, $2::int, coalesce(nullif($3,'')::date, now()::date), nullif($4,'')::date, nullif($5,'')::numeric, nullif($6,'')::money, nullif($7,'')::int2, $8, nullif($9,''))
 	returning id_os
 	`
 
@@ -31,7 +31,6 @@ func (r *OsRepoPG) Create(ctx context.Context, in models.OsCreate) (models.Os, e
 	if err := r.db.DB().QueryRowContext(
 		ctx,
 		q,
-		in.Usuario,
 		in.IdCliente,
 		in.IdProduto,
 		in.DataInicio,
@@ -47,7 +46,6 @@ func (r *OsRepoPG) Create(ctx context.Context, in models.OsCreate) (models.Os, e
 
 	out := models.Os{
 		IdOs:                  idOs,
-		Usuario:               in.Usuario,
 		IdCliente:             in.IdCliente,
 		IdProduto:             in.IdProduto,
 		DataInicio:            in.DataInicio,
@@ -66,10 +64,9 @@ func (r *OsRepoPG) GetById(ctx context.Context, id string) (*models.Os, error) {
 	const q = `
 	select
 		id_os::text as id_os,
-		usuario,
 		id_cliente::text as id_cliente,
 		id_produto::text as id_produto,
-		data_incio::text as data_incio,
+		data_inicio::text as data_inicio,
 		coalesce(data_fim::text, '') as data_fim,
 		coalesce(total_horas_trabalhadas::text, '') as total_horas_trabalhadas,
 		coalesce(valor_os::text, '') as valor_os,
@@ -93,10 +90,9 @@ func (r *OsRepoPG) List(ctx context.Context, limit, offset int) ([]models.Os, er
 	const q = `
 	select
 		id_os::text as id_os,
-		usuario,
 		id_cliente::text as id_cliente,
 		id_produto::text as id_produto,
-		data_incio::text as data_incio,
+		data_inicio::text as data_inicio,
 		coalesce(data_fim::text, '') as data_fim,
 		coalesce(total_horas_trabalhadas::text, '') as total_horas_trabalhadas,
 		coalesce(valor_os::text, '') as valor_os,
@@ -118,23 +114,21 @@ func (r *OsRepoPG) List(ctx context.Context, limit, offset int) ([]models.Os, er
 func (r *OsRepoPG) Update(ctx context.Context, in *models.Os) error {
 	const q = `
 	update ordens_servico set
-		usuario = coalesce(nullif($2,''), usuario),
-		id_cliente = coalesce(nullif($3,'')::int, id_cliente),
-		id_produto = coalesce(nullif($4,'')::int, id_produto),
-		data_incio = coalesce(nullif($5,'')::date, data_incio),
-		data_fim = coalesce(nullif($6,'')::date, data_fim),
-		total_horas_trabalhadas = coalesce(nullif($7,'')::numeric, total_horas_trabalhadas),
-		valor_os = coalesce(nullif($8,'')::money, valor_os),
-		status = coalesce(nullif($9,'')::int2, status),
-		descricao = coalesce(nullif($10,''), descricao),
-		observacao = coalesce(nullif($11,''), observacao)
+		id_cliente = coalesce(nullif($2,'')::int, id_cliente),
+		id_produto = coalesce(nullif($3,'')::int, id_produto),
+		data_inicio = coalesce(nullif($4,'')::date, data_inicio),
+		data_fim = coalesce(nullif($5,'')::date, data_fim),
+		total_horas_trabalhadas = coalesce(nullif($6,'')::numeric, total_horas_trabalhadas),
+		valor_os = coalesce(nullif($7,'')::money, valor_os),
+		status = coalesce(nullif($8,'')::int2, status),
+		descricao = coalesce(nullif($9,''), descricao),
+		observacao = coalesce(nullif($10,''), observacao)
 	where id_os = $1
 	returning
 		id_os::text as id_os,
-		usuario,
 		id_cliente::text as id_cliente,
 		id_produto::text as id_produto,
-		data_incio::text as data_incio,
+		data_inicio::text as data_inicio,
 		coalesce(data_fim::text, '') as data_fim,
 		coalesce(total_horas_trabalhadas::text, '') as total_horas_trabalhadas,
 		coalesce(valor_os::text, '') as valor_os,
@@ -147,7 +141,6 @@ func (r *OsRepoPG) Update(ctx context.Context, in *models.Os) error {
 		ctx,
 		q,
 		in.IdOs,
-		in.Usuario,
 		in.IdCliente,
 		in.IdProduto,
 		in.DataInicio,
