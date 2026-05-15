@@ -9,9 +9,9 @@ type OsCreate struct {
 	ValorOs               string `json:"valor_os"`
 	Status                string `json:"status"`
 	Descricao             string `json:"descricao"`
-	Observacao            string `json:"observacao"`
+	Observacao            string `json:"observacao"`	
 
-	
+	Itens []ControleOsCreate `json:"itens"`
 }
 
 type Os struct {
@@ -29,7 +29,7 @@ type Os struct {
 
 type OsComControles struct {
 	Os
-	Controles []ControleOs `json:"controles"`
+	Itens []ControleOs `json:"itens"`
 }
 
 type OsUpdate struct {

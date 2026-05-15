@@ -18,9 +18,13 @@ func NewOsService(r database.OsRepo, controleOsRepo database.ControleOsRepo) *Os
 }
 
 func (s *OsService) Create(ctx context.Context, in models.OsCreate) (models.Os, error) {
-	if strings.TrimSpace(in.IdCliente) == "" || strings.TrimSpace(in.IdProduto) == "" || strings.TrimSpace(in.Descricao) == "" {
+
+	if strings.TrimSpace(in.IdCliente) == "" ||
+		strings.TrimSpace(in.IdProduto) == "" ||
+		strings.TrimSpace(in.Descricao) == "" {
 		return models.Os{}, ErrDadosInvalidos
 	}
+
 	in.IdCliente = strings.TrimSpace(in.IdCliente)
 	in.IdProduto = strings.TrimSpace(in.IdProduto)
 	in.DataInicio = strings.TrimSpace(in.DataInicio)
@@ -31,7 +35,24 @@ func (s *OsService) Create(ctx context.Context, in models.OsCreate) (models.Os, 
 	in.Descricao = strings.TrimSpace(in.Descricao)
 	in.Observacao = strings.TrimSpace(in.Observacao)
 
-	return s.repo.Create(ctx, in)
+	osCriada, err := s.repo.Create(ctx, in)
+
+	if err != nil {
+		return models.Os{}, err
+	}
+
+	for _, item := range in.Itens {
+
+		item.IdOs = osCriada.IdOs
+
+		_, err := s.controleOsRepo.Create(ctx, item)
+
+		if err != nil {
+			return models.Os{}, err
+		}
+	}
+
+	return osCriada, nil
 }
 
 func (s *OsService) GetById(ctx context.Context, id string) (models.Os, error) {
@@ -54,9 +75,9 @@ func (s *OsService) GetByIdComItens(ctx context.Context, id string) (models.OsCo
 	}
 
 	return models.OsComControles{
-		Os:        os,
-		Controles: controles,
-	}, nil
+	Os:    os,
+	Itens: controles,
+}, nil
 }
 
 func (s *OsService) List(ctx context.Context, limit, offset int) ([]models.Os, error) {
