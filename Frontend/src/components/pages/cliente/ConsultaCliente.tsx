@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { MdPerson } from "react-icons/md";
 
 export function ConsultaCliente() {
-  
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [clientesFiltrados, setClientesFiltrados] = useState<Cliente[]>([]);
   const navigate = useNavigate();
@@ -14,7 +13,7 @@ export function ConsultaCliente() {
   const [filtros, setFiltros] = useState({
     nome: "",
     id: "",
-    ativo: ""
+    ativo: "",
   });
 
   useEffect(() => {
@@ -22,13 +21,13 @@ export function ConsultaCliente() {
 
     if (filtros.id.trim() !== "") {
       filtrados = filtrados.filter((c) =>
-        String(c.id_cliente).includes(filtros.id)
+        String(c.id_cliente).includes(filtros.id),
       );
     }
 
     if (filtros.nome.trim() !== "") {
       filtrados = filtrados.filter((c) =>
-        c.razao_social.toLowerCase().includes(filtros.nome.toLowerCase())
+        c.razao_social.toLowerCase().includes(filtros.nome.toLowerCase()),
       );
     }
 
@@ -37,7 +36,7 @@ export function ConsultaCliente() {
     }
 
     setClientesFiltrados(filtrados);
-  }, [filtros, clientes]); 
+  }, [filtros, clientes]);
 
   useEffect(() => {
     async function carregarClientes() {
@@ -85,9 +84,7 @@ export function ConsultaCliente() {
           <select
             className="input"
             value={filtros.ativo}
-            onChange={(e) =>
-              setFiltros({ ...filtros, ativo: e.target.value })
-            }
+            onChange={(e) => setFiltros({ ...filtros, ativo: e.target.value })}
           >
             <option value="">Todos</option>
             <option value="S">Ativo</option>
@@ -95,7 +92,7 @@ export function ConsultaCliente() {
           </select>
         </div>
       </div>
-      
+
       <div className="tableContainer">
         <table>
           <thead>
@@ -138,10 +135,10 @@ export function ConsultaCliente() {
         type="button"
         className="Incluir"
         onClick={() => navigate("/CadastroCliente")}
-      > Incluir
+      >
+        {" "}
+        Incluir
       </button>
-
-      
     </Style.Container>
   );
 }

@@ -6,10 +6,10 @@ export const Container = styled.div`
   display: grid;
   place-items: center;
   z-index: 1000;
-  background-color: #00000050; 
+  background-color: #00000050;
   overflow: visible;
 
- .ModalServico {
+  .ModalServico {
     display: flex;
     flex-direction: column;
     align-items: left;
@@ -21,11 +21,11 @@ export const Container = styled.div`
     font-family: "Inter", sans-serif;
   }
 
-  form{
+  form {
     margin: 0;
   }
 
-   .sessao2 {
+  .sessao2 {
     display: grid;
     gap: 1rem;
     width: 100%;
@@ -58,7 +58,7 @@ export const Container = styled.div`
     cursor: pointer;
   }
 
-   .vermelho {
+  .vermelho {
     border: 3px #c72e2e solid;
     color: #c72e2e;
     padding: 1rem 1.5rem 1rem 1.5rem;
@@ -67,8 +67,8 @@ export const Container = styled.div`
     font-size: 15px;
     cursor: pointer;
   }
-  
- .vermelho:hover {
+
+  .vermelho:hover {
     opacity: 0.5;
   }
 
@@ -80,7 +80,7 @@ export const Container = styled.div`
     opacity: 0.5;
   }
 
-  .obsInput{
+  .obsInput {
     all: unset;
     background-color: #414141;
     border: 2px solid transparent;
@@ -94,18 +94,18 @@ export const Container = styled.div`
     min-height: 4rem;
   }
 
-  .obsInput:focus{
+  .obsInput:focus {
     border: 2px #dededee0 solid;
   }
 
-  .dates{
+  .dates {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
     width: 100%;
   }
 
-  .disabled{
+  .disabled {
     background: #414141;
     border: 2px solid transparent;
     color: #6b6b6b;
@@ -118,25 +118,24 @@ export const Container = styled.div`
   }
 
   .date-input {
-  background: #414141;
-  border: 2px solid transparent;
-  color: #fff;
-  padding: 8px;
-  border-radius: 6px;
-  font-family: "Inter", sans-serif;
-  font-size: 15px;
-  box-sizing: border-box;
-  width: 100%;
+    background: #414141;
+    border: 2px solid transparent;
+    color: #fff;
+    padding: 8px;
+    border-radius: 6px;
+    font-family: "Inter", sans-serif;
+    font-size: 15px;
+    box-sizing: border-box;
+    width: 100%;
   }
 
   .date-input:focus {
-  outline: none;
-  border-color: #dededee0;
-}
+    outline: none;
+    border-color: #dededee0;
+  }
 
- .disabled:focus {
-  outline: none;
-  border: 2px solid transparent;
-}
-
-  `;
+  .disabled:focus {
+    outline: none;
+    border: 2px solid transparent;
+  }
+`;

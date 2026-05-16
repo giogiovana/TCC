@@ -7,7 +7,12 @@ type ModalProps = {
   entidade: string;
 };
 
-export default function Modal({ isOpen, setOpenModal, onConfirm, entidade }: ModalProps) {
+export default function Modal({
+  isOpen,
+  setOpenModal,
+  onConfirm,
+  entidade,
+}: ModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -19,7 +24,7 @@ export default function Modal({ isOpen, setOpenModal, onConfirm, entidade }: Mod
           <button className="transparente" onClick={onConfirm}>
             Sim
           </button>
- 
+
           <button className="roxo" onClick={() => setOpenModal(false)}>
             Não
           </button>

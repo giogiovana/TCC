@@ -36,7 +36,9 @@ export default function ModalServico({
 }: ModalProps) {
   const [servico, setServico] = useState<Servico[]>([]);
   const [tecnico, setTecnico] = useState<Tecnico[]>([]);
-  const [servicoSelecionado, setServicoSelecionado] = useState<Servico | null>(null);
+  const [servicoSelecionado, setServicoSelecionado] = useState<Servico | null>(
+    null,
+  );
 
   const {
     control,
@@ -65,7 +67,7 @@ export default function ModalServico({
     carregarDados();
   }, [isOpen]);
 
-useEffect(() => {
+  useEffect(() => {
     if (itemEditando) {
       reset(itemEditando);
     } else {
@@ -86,38 +88,34 @@ useEffect(() => {
   }));
 
   const converterHoraParaDecimal = (hora: string) => {
-  const [h, m] = hora.split(":").map(Number);
-  return (h + m / 60).toFixed(2);
+    const [h, m] = hora.split(":").map(Number);
+    return (h + m / 60).toFixed(2);
   };
 
   const onSubmit = (data: Itens) => {
+    const itemFinal: Itens = {
+      ...data,
 
-  const itemFinal: Itens = {
-    ...data,
+      id_servico: String(data.id_servico),
+      id_tecnico: String(data.id_tecnico),
 
-    id_servico: String(data.id_servico),
-    id_tecnico: String(data.id_tecnico),
+      qtd_horas_servico: converterHoraParaDecimal(
+        String(data.qtd_horas_servico),
+      ),
+    };
 
-    qtd_horas_servico: converterHoraParaDecimal(
-      String(data.qtd_horas_servico)
-    ),
+    onSave(itemFinal);
+    reset(itensVazios);
+    onClose();
   };
-
-  onSave(itemFinal);
-  reset(itensVazios);
-  onClose();
-};
 
   return (
     <Style.Container>
       <div className="ModalServico">
         <h2>Adicionar Serviço</h2>
 
-        <form 
-        onSubmit={handleSubmit(onSubmit)}>
-        
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="sessao2">
-
             <div>
               <label>Serviço</label>
 
@@ -131,24 +129,23 @@ useEffect(() => {
                     options={servicoOptions}
                     value={
                       servicoOptions.find(
-                        (opt) => opt.value === String(field.value)
+                        (opt) => opt.value === String(field.value),
                       ) || null
                     }
                     onChange={(selected) => {
-                        const serv = servico.find(
-                          (s) => s.id_servico === selected?.value
-                        );
+                      const serv = servico.find(
+                        (s) => s.id_servico === selected?.value,
+                      );
 
-                        setServicoSelecionado(serv || null);
+                      setServicoSelecionado(serv || null);
 
-                        field.onChange(String(selected?.value));
-                     } 
-                    }
+                      field.onChange(String(selected?.value));
+                    }}
                     isSearchable
                   />
                 )}
               />
-              {errors.id_servico && <p>{errors.id_servico.message}</p>}
+              <ErrorMessage error={errors.id_servico?.message} />
             </div>
 
             <div>
@@ -164,7 +161,7 @@ useEffect(() => {
                     options={tecnicoOptions}
                     value={
                       tecnicoOptions.find(
-                        (opt) => opt.value === String(field.value)
+                        (opt) => opt.value === String(field.value),
                       ) || null
                     }
                     onChange={(selected) =>
@@ -174,7 +171,7 @@ useEffect(() => {
                   />
                 )}
               />
-              {errors.id_tecnico && <p>{errors.id_tecnico.message}</p>}
+              <ErrorMessage error={errors.id_tecnico?.message} />
             </div>
 
             <div className="dates">
@@ -183,8 +180,7 @@ useEffect(() => {
                 <input
                   type="date"
                   className="date-input"
-                  {...register("data_inicio", {
-                  })}
+                  {...register("data_inicio", {})}
                 />
                 {errors.data_inicio && <p>{errors.data_inicio.message}</p>}
               </div>
@@ -192,61 +188,58 @@ useEffect(() => {
               <div>
                 <label>Fim</label>
                 <input
-                className="date-input"
+                  className="date-input"
                   type="date"
-                  
-                  {...register("data_fim", {
-                  })}
+                  {...register("data_fim", {})}
                 />
                 {errors.data_fim && <p>{errors.data_fim.message}</p>}
               </div>
             </div>
 
             <div className="dates">
-            <div>
-            <label>Valor do serviço</label>
-            <input
-              className="disabled"
-              value={servicoSelecionado?.valor_servico || 0}
-              readOnly
-            />
-            </div>
+              <div>
+                <label>Valor do serviço</label>
+                <input
+                  className="disabled"
+                  value={servicoSelecionado?.valor_servico || 0}
+                  readOnly
+                />
+              </div>
 
-            <div>
-            <label>Horas trabalhadas</label>
-            <input
-              type="time"
-              className="date-input"
-              {...register("qtd_horas_servico", )}
-            />
-          </div>
-          </div>
+              <div>
+                <label>Horas trabalhadas </label>
+                <input
+                  type="decimal"
+                  className="date-input"
+                  {...register("qtd_horas_servico", { required: "Digite a quantidade de horas" })}
+                />
+                <ErrorMessage error={errors.qtd_horas_servico?.message} />
+              </div>
+            </div>
 
             <div>
               <label>Observação</label>
-              <input 
-              className="obsInput"
-              {...register("observacao")} />
+              <input className="obsInput" {...register("observacao")} />
             </div>
 
             <div className="buttons">
-              <button 
-              type="button" 
-               onClick={() => {
-                reset(itensVazios);
-                onClose();
-              }}
-              className="vermelho"
-              > Cancelar
+              <button
+                type="button"
+                onClick={() => {
+                  reset(itensVazios);
+                  onClose();
+                }}
+                className="vermelho"
+              >
+                {" "}
+                Cancelar
               </button>
 
-              <button 
-              type="submit"
-              className="roxo"
-              > Salvar
+              <button type="submit" className="roxo">
+                {" "}
+                Salvar
               </button>
             </div>
-
           </div>
         </form>
       </div>

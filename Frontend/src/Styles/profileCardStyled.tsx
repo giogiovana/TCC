@@ -1,8 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-
-.admin-card {
+  .admin-card {
     background-color: #1d1d1d;
     border-radius: 10px;
     padding: 0.7rem;
@@ -64,5 +63,4 @@ export const Container = styled.div`
   .logout-icon:hover {
     opacity: 0.5;
   }
-
 `;

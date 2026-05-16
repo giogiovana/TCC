@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-
   position: fixed;
   inset: 0;
   display: grid;
@@ -38,8 +37,8 @@ export const Container = styled.div`
     color: #ffffff;
     cursor: pointer;
   }
-  
- .transparente:hover {
+
+  .transparente:hover {
     opacity: 0.5;
   }
 
@@ -52,8 +51,8 @@ export const Container = styled.div`
     font-size: 15px;
     cursor: pointer;
   }
-  
- .vermelho:hover {
+
+  .vermelho:hover {
     opacity: 0.5;
   }
 
@@ -69,7 +68,7 @@ export const Container = styled.div`
   .roxo:hover {
     opacity: 0.5;
   }
-  
+
   label {
     display: flex;
   }
