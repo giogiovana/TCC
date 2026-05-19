@@ -12,7 +12,13 @@ export async function cadastrarOrdemServico(
         `/ordens-servico/${cabecalho.id_os}`,
         cabecalho,
       );
-      return response.status === 200;
+
+    console.log(
+      "UPDATE STATUS:",
+      response.status,
+    );
+
+      return (response.status === 200) || (response.status === 202);
     }
 
     const response = await api.post("/ordens-servico", cabecalho);
@@ -57,10 +63,16 @@ export async function excluirOrdemServico(
   try {
     const response = await api.delete(`/ordens-servico/${ordemservico.id_os}`);
     return response.status === 200 || response.status === 204;
-  } catch (error) {
-    console.error("Erro na exclusão de ordens de serviço:", error);
-    return false;
+  } catch (error:any) {
+  console.error("Erro na exclusão");
+
+  if (error.response) {
+    console.log("STATUS:", error.response.status);
+    console.log("MSG:", error.response.data);
   }
+
+  return false;
+}
 }
 
 export async function consultarOrdemServicoPorId(
@@ -99,7 +111,7 @@ export async function consultarServico(): Promise<any> {
 
 export async function consultarStatus(): Promise<any> {
   try {
-    const response = await api.get("/servicos");
+    const response = await api.get("/status-os");
     console.log(response.data);
     return response.data;
   } catch (error) {

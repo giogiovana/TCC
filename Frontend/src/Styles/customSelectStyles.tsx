@@ -6,8 +6,8 @@ export const customSelectStyles = {
     color: "#fff",
     border: state.isFocused ? "2px solid #dededee0" : "2px solid transparent",
     boxSizing: "border-box",
-    minWidth: "100%",
-    maxWidth: "100%",
+    minWidth: "20rem",
+    maxWidth: "30rem",
     borderRadius: "6px",
     boxShadow: "none",
     "&:hover": {

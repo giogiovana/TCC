@@ -18,8 +18,6 @@ export const Container = styled.div`
     max-width: 100%;
     max-height: 75vh;
     box-sizing: border-box;
-
-    display: flex;
     flex-direction: column;
   }
 
@@ -70,24 +68,10 @@ export const Container = styled.div`
     display: flex;
     flex-wrap: wrap;
     padding: 1rem;
-    gap: 2rem;
+    gap: 1rem;
     width: 100%;
     box-sizing: border-box;
     margin: 1rem 0rem 1rem 0rem;
-  }
-
-  .icon {
-    font-size: 20px;
-    font-weight: 500;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .eraser {
-    font-size: 1.5rem;
-    align-items: center;
-    color: #6b7f9e;
   }
 
   .inputFiltro {
@@ -243,13 +227,13 @@ export const Container = styled.div`
     top: 0;
     font-weight: 600;
     padding: 15px;
-    z-index: 5;
     background-color: #6b7f9e;
   }
 
   .tableContainer tbody td {
     padding: 15px 10px;
     text-align: center;
+    vertical-align: middle;
   }
 
   .tableContainer tbody tr:nth-child(even) {
@@ -258,5 +242,66 @@ export const Container = styled.div`
 
   .tableContainer tbody tr:hover {
     background-color: #181818;
+  }
+
+  .excluir{
+    font-size: 25px;
+    padding: 0;
+    margin: 0;
+    color: #c72e2e;
+  }
+
+  .editar{
+    font-size: 25px;
+    padding: 0;
+    margin: 0;
+    color: #6b7f9e;
+  }
+
+  .icon {
+    font-size: 20px;
+    font-weight: 500;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .status-aberta {
+  background: #3498db;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.status-andamento {
+  background: #f39c12;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.status-finalizada {
+  background: #2ecc71;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.status-cancelada {
+  background: #e74c3c;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+  .disabled {
+    background: #414141;
+    border: 2px solid transparent;
+    color: #6b6b6b;
+    padding: 8px;
+    border-radius: 6px;
+    font-family: "Inter", sans-serif;
+    font-size: 15px;
+    box-sizing: border-box;
   }
 `;

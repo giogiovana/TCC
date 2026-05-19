@@ -77,7 +77,7 @@ export default function Login({ onLogin }: Props) {
         </section>
       </form>
 
-      <img src="/src/assets/pexels-jplenio-1105379.jpg" className="foto" />
+      <img src="/src/assets/fotofundo.jpg" className="foto" />
     </Style.Container>
   );
 }

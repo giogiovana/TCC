@@ -1,4 +1,4 @@
-import * as Style from "../../Styles/modalServ.Styles";
+ import * as Style from "../../Styles/modalServ.Styles";
 import { customSelectStyles } from "../../Styles/customSelectStyles";
 
 import { Itens, itensVazios } from "../../Models/itensOs";
@@ -25,14 +25,14 @@ type ModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSave: (item: Itens) => void;
-  itemEditando?: Itens | null;
+  itemInicial?: Itens | null;
 };
 
 export default function ModalServico({
   isOpen,
   onClose,
   onSave,
-  itemEditando,
+  itemInicial,
 }: ModalProps) {
   const [servico, setServico] = useState<Servico[]>([]);
   const [tecnico, setTecnico] = useState<Tecnico[]>([]);
@@ -68,12 +68,12 @@ export default function ModalServico({
   }, [isOpen]);
 
   useEffect(() => {
-    if (itemEditando) {
-      reset(itemEditando);
+    if (itemInicial) {
+      reset(itemInicial);
     } else {
       reset(itensVazios);
     }
-  }, [itemEditando, reset]);
+  }, [itemInicial, reset]);
 
   if (!isOpen) return null;
 
@@ -87,11 +87,6 @@ export default function ModalServico({
     label: t.nome_fantasia,
   }));
 
-  const converterHoraParaDecimal = (hora: string) => {
-    const [h, m] = hora.split(":").map(Number);
-    return (h + m / 60).toFixed(2);
-  };
-
   const onSubmit = (data: Itens) => {
     const itemFinal: Itens = {
       ...data,
@@ -99,9 +94,8 @@ export default function ModalServico({
       id_servico: String(data.id_servico),
       id_tecnico: String(data.id_tecnico),
 
-      qtd_horas_servico: converterHoraParaDecimal(
-        String(data.qtd_horas_servico),
-      ),
+      qtd_horas_servico: String(data.qtd_horas_servico),
+    
     };
 
     onSave(itemFinal);
@@ -180,9 +174,9 @@ export default function ModalServico({
                 <input
                   type="date"
                   className="date-input"
-                  {...register("data_inicio", {})}
+                  {...register("data_inicio", {required: "Digite a data de início"})}
                 />
-                {errors.data_inicio && <p>{errors.data_inicio.message}</p>}
+                <ErrorMessage error={errors.data_inicio?.message} />
               </div>
 
               <div>
@@ -190,9 +184,8 @@ export default function ModalServico({
                 <input
                   className="date-input"
                   type="date"
-                  {...register("data_fim", {})}
+                  {...register("data_fim")}
                 />
-                {errors.data_fim && <p>{errors.data_fim.message}</p>}
               </div>
             </div>
 
@@ -209,8 +202,10 @@ export default function ModalServico({
               <div>
                 <label>Horas trabalhadas </label>
                 <input
-                  type="decimal"
-                  className="date-input"
+                    type="number"
+                    className="date-input"
+                    step="0.01"
+                    min="0" 
                   {...register("qtd_horas_servico", { required: "Digite a quantidade de horas" })}
                 />
                 <ErrorMessage error={errors.qtd_horas_servico?.message} />

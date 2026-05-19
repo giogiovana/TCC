@@ -12,7 +12,6 @@ export const Container = styled.div`
   .ModalServico {
     display: flex;
     flex-direction: column;
-    align-items: left;
     background-color: #303030;
     border-radius: 6px;
     color: #ffffff;
@@ -138,4 +137,5 @@ export const Container = styled.div`
     outline: none;
     border: 2px solid transparent;
   }
+
 `;

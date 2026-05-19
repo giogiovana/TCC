@@ -12,6 +12,8 @@ import { toast } from "react-toastify";
 import { Cliente } from "../../../Models/cliente";
 import { Produto } from "../../../Models/produto";
 import { Servico } from "../../../Models/servico";
+import { Status } from "../../../Models/status";
+import { Tecnico } from "../../../Models/tecnico";
 import { cabecalhoVazio, Cabecalho } from "../../../Models/cabecalhoOs";
 
 import ModalCancel from "../../modais/modalCancel";
@@ -20,11 +22,13 @@ import ModalServico from "../../modais/modalServico";
 
 import { consultarCliente } from "../cliente/Cliente.Function";
 import { consultarProduto } from "../produto/ProdutoFunction";
+import { consultarTecnico } from "../tecnicos/TecnicoFunction";
 import {
   consultarServico,
   cadastrarOrdemServico,
   consultarOrdemServicoPorId,
-  excluirOrdemServico,
+  excluirOrdemServico,  
+  consultarStatus
 } from "./OsFunction";
 
 type ErrorMessageProps = {
@@ -46,6 +50,9 @@ export function CadastroOs() {
   const [produto, setProduto] = useState<Produto[]>([]);
   const [cliente, setCliente] = useState<Cliente[]>([]);
   const [servico, setServico] = useState<Servico[]>([]);
+  const [status, setStatus] = useState<Status[]>([]);
+  const [tecnico, setTecnico] = useState<Tecnico[]>([]);
+  const [itemEditando, setItemEditando] = useState<number | null>(null);
 
   const navigate = useNavigate();
 
@@ -63,7 +70,7 @@ export function CadastroOs() {
 
   const ordemAtual = watch();
 
-  const { fields, append, remove, replace } = useFieldArray({
+  const { fields, append, remove, replace,update } = useFieldArray({
     control,
     name: "itens",
   });
@@ -90,43 +97,45 @@ export function CadastroOs() {
       const produtos = await consultarProduto();
       const clientes = await consultarCliente();
       const servicos = await consultarServico();
+      const tecnicos = await consultarTecnico();
+      const status = await consultarStatus();
 
       setProduto(produtos || []);
       setCliente(clientes || []);
       setServico(servicos || []);
+      setTecnico(tecnicos || []);
+      setStatus(status || null);
     };
 
     carregarDados();
   }, []);
 
-  useEffect(() => {
-    // TOTAL HORAS
-    const totalHoras = fields.reduce((acc, item) => {
-      return acc + Number(item.qtd_horas_servico || 0);
-    }, 0);
+ useEffect(() => {
+  const totalHoras = fields.reduce((acc, item) => {
+    return acc + Number(item.qtd_horas_servico || 0);
+  }, 0);
 
-    setValue("total_horas_trabalhadas", totalHoras.toFixed(2));
+  setValue("total_horas_trabalhadas", totalHoras.toFixed(2));
 
-    // TOTAL VALOR
-    const totalValor = fields.reduce((acc, item) => {
-      const servicoEncontrado = servico.find(
-        (s) => String(s.id_servico) === String(item.id_servico),
-      );
+  const totalValor = fields.reduce((acc, item) => {
+    const servicoEncontrado = servico.find(
+      (s) => String(s.id_servico) === String(item.id_servico)
+    );
 
-      const valorHora = Number(
-        String(servicoEncontrado?.valor_servico || "0")
-          .replace("R$", "")
-          .replace(",", ".")
-          .trim(),
-      );
+    const valorHora = Number(
+      String(servicoEncontrado?.valor_servico || "0")
+        .replace("R$", "")
+        .replace(",", ".")
+        .trim()
+    );
 
-      const horas = Number(item.qtd_horas_servico || 0);
+    const horas = Number(item.qtd_horas_servico || 0);
 
-      return acc + valorHora * horas;
-    }, 0);
+    return acc + valorHora * horas;
+  }, 0);
 
-    setValue("valor_os", totalValor.toFixed(2));
-  }, [fields, servico, setValue]);
+  setValue("valor_os", totalValor.toFixed(2));
+}, [fields, servico, setValue]);
 
   const produtoOptions = produto.map((p) => ({
     value: p.id_produto,
@@ -138,15 +147,15 @@ export function CadastroOs() {
     label: c.nome_fantasia,
   }));
 
+  const statusOptions = status.map((s) => ({
+    value: s.id_status,
+    label: s.descricao,
+  }));
+
   const onSubmit = async (dados: Cabecalho) => {
     const dadosTratados: Cabecalho = {
       ...dados,
-      status: "1",
-      id_cliente: String(dados.id_cliente),
-      id_produto: String(dados.id_produto),
-
       valor_os: String(dados.valor_os),
-
       total_horas_trabalhadas: String(dados.total_horas_trabalhadas),
     };
 
@@ -172,6 +181,14 @@ export function CadastroOs() {
       toast.error("Erro ao excluir ordem de serviço.");
     }
   };
+
+  const getTecnicoNome = (id: string) => {
+  return (
+    tecnico.find(
+      (t) => String(t.id_tecnico) === String(id)
+    )?.nome_fantasia || id
+  );
+};
 
   return (
     <Style.Container>
@@ -254,7 +271,7 @@ export function CadastroOs() {
           <div>
             <label>Horas trabalhadas</label>
             <input
-              className="input"
+              className="disabled"
               value={watch("total_horas_trabalhadas")}
               readOnly
             />
@@ -262,13 +279,40 @@ export function CadastroOs() {
 
           <div>
             <label>Valor total</label>
-            <input className="input" value={watch("valor_os")} readOnly />
+            <input className="disabled" value={watch("valor_os")} readOnly />
           </div>
 
           <div>
             <label>Descrição</label>
             <input className="obsInput" {...register("descricao", { required: "Digite a descrição" })} />
             <ErrorMessage error={errors.descricao?.message} />
+          </div>
+
+          <div>
+            <label>Status</label>
+
+            <Controller
+              name="status"
+              control={control}
+              rules={{ required: "Selecione um status" }}
+              render={({ field }) => (
+                <Select
+                  styles={customSelectStyles}
+                  options={statusOptions}
+                  value={
+                    statusOptions.find(
+                      (s) => String(s.value) === String(field.value),
+                    ) || null
+                  }
+                  onChange={(selected) =>
+                    field.onChange(String(selected?.value))
+                  }
+                  isSearchable
+                  placeholder="Selecione um status"
+                />
+              )}
+          />
+          <ErrorMessage error={errors.status?.message} />
           </div>
         </div>
 
@@ -288,6 +332,7 @@ export function CadastroOs() {
                 <th>Técnico</th>
                 <th>Início</th>
                 <th>Fim</th>
+                <th>Horas</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -297,31 +342,37 @@ export function CadastroOs() {
                 fields.map((item, index) => (
                   <tr key={item.id}>
                     <td>{item.id_servico}</td>
-                    <td>{item.id_tecnico}</td>
+                    <td>{getTecnicoNome(item.id_tecnico)}</td>
                     <td>{item.data_inicio}</td>
                     <td>{item.data_fim}</td>
+                    <td>{item.qtd_horas_servico}</td>
                     <td>
+                    <div className="acoes">
+
                       <button
                         type="button"
                         className="excluir"
                         onClick={() => remove(index)}
-                      >
-                        <FaTrashAlt />
+                      > <FaTrashAlt />
                       </button>
 
                       <button
                         type="button"
                         className="editar"
-                        onClick={() => remove(index)}
-                      >
-                        <FaEdit />
+                        onClick={() => {
+                          setItemEditando(index);
+                          setOpenModalServico(true);
+                        }}
+                      > <FaEdit />
                       </button>
+
+                      </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5}>Nenhum serviço registrado</td>
+                  <td colSpan={6}>Nenhum serviço registrado</td>
                 </tr>
               )}
             </tbody>
@@ -378,14 +429,37 @@ export function CadastroOs() {
 
       <ModalServico
         isOpen={openModalServico}
-        onClose={() => setOpenModalServico(false)}
-        onSave={(item) => {
-          append({
-            ...item,
-            id_os: watch("id_os"),
-          });
+
+        itemInicial={
+            itemEditando !== null
+              ? fields[itemEditando]
+              : undefined
+          }
+
+        onClose={() => {
+          setOpenModalServico(false);
+          setItemEditando(null);
         }}
-      />
+
+        onSave={(item) => {
+
+        const itemNovo = {
+          ...item,
+          id_os: watch("id_os"),
+        };
+
+        if (itemEditando !== null) {
+          update(
+            itemEditando,
+            itemNovo,
+          );
+        } else {
+          append(itemNovo);
+        }
+        setItemEditando(null);
+        setOpenModalServico(false);
+      }}
+    />
     </Style.Container>
   );
 }

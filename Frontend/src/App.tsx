@@ -5,21 +5,17 @@ import { GlobalStyle } from "./Styles/GlobalStyle";
 import { BrowserRouter } from "react-router-dom";
 import Login from "./components/pages/login/login";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Verifica token ao carregar o app
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) setIsLoggedIn(true);
   }, []);
 
-  // Login
   const handleLogin = () => setIsLoggedIn(true);
 
-  // Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
