@@ -41,9 +41,9 @@ function App() {
         </BrowserRouter>
       </main>
 
-       <ToastContainer
-        position="bottom-right"  
-        autoClose={3000}      
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
         hideProgressBar={true}
         newestOnTop={false}
         closeOnClick
@@ -51,7 +51,6 @@ function App() {
         draggable
         theme="colored"
       />
-
     </>
   );
 }

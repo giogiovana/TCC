@@ -14,7 +14,6 @@ export async function cadastrarCliente(cliente: Cliente): Promise<boolean> {
 
     const response = await api.post("/clientes", cliente);
     return response.status === 201;
-
   } catch (error) {
     console.error("Erro no cadastro de clientes:", error);
     console.log();
@@ -34,16 +33,14 @@ export async function consultarCliente(): Promise<any> {
 }
 
 export async function excluirCliente(cliente: Cliente): Promise<boolean> {
-  
-    if (!cliente.id_cliente){
-    console.warn("Cliente não encontrado")
+  if (!cliente.id_cliente) {
+    console.warn("Cliente não encontrado");
     return false;
-    }
+  }
 
-    try {
+  try {
     const response = await api.delete(`/clientes/${cliente.id_cliente}`);
     return response.status === 200 || response.status === 204;
-
   } catch (error) {
     console.error("Erro na exclusão de clientes:", error);
     return false;

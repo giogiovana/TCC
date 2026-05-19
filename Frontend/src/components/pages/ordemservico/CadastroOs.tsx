@@ -20,8 +20,12 @@ import ModalServico from "../../modais/modalServico";
 
 import { consultarCliente } from "../cliente/Cliente.Function";
 import { consultarProduto } from "../produto/ProdutoFunction";
-import { consultarServico, cadastrarOrdemServico, consultarOrdemServicoPorId, excluirOrdemServico, } from "./OsFunction";
-
+import {
+  consultarServico,
+  cadastrarOrdemServico,
+  consultarOrdemServicoPorId,
+  excluirOrdemServico,
+} from "./OsFunction";
 
 type ErrorMessageProps = {
   error?: string;
@@ -59,25 +63,27 @@ export function CadastroOs() {
 
   const ordemAtual = watch();
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "itens",
   });
 
-  useEffect(() => {
-    const carregarOrdem = async () => {
-      if (id_os) {
-        const data = await consultarOrdemServicoPorId(id_os);
-        if (data && typeof data !== "boolean") {
-          reset(data);
-        }
-      } else {
-        reset(cabecalhoVazio);
+ useEffect(() => {
+  const carregarOrdem = async () => {
+    if (id_os) {
+      const data = await consultarOrdemServicoPorId(id_os);
+      console.log("📦 OS carregada:", data);
+      if (data && typeof data !== "boolean") {
+        reset(data);
+        replace(data.itens || []);
       }
-    };
-
-    carregarOrdem();
-  }, [id_os, reset]);
+    } else {
+      reset(cabecalhoVazio);
+      replace([]);
+    }
+  };
+  carregarOrdem();
+}, [id_os, reset, replace]);
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -85,54 +91,42 @@ export function CadastroOs() {
       const clientes = await consultarCliente();
       const servicos = await consultarServico();
 
-
       setProduto(produtos || []);
       setCliente(clientes || []);
       setServico(servicos || []);
-
     };
 
     carregarDados();
   }, []);
 
   useEffect(() => {
+    // TOTAL HORAS
+    const totalHoras = fields.reduce((acc, item) => {
+      return acc + Number(item.qtd_horas_servico || 0);
+    }, 0);
 
-  // TOTAL HORAS
-  const totalHoras = fields.reduce((acc, item) => {
-    return acc + Number(item.qtd_horas_servico || 0);
-  }, 0);
+    setValue("total_horas_trabalhadas", totalHoras.toFixed(2));
 
-  setValue(
-    "total_horas_trabalhadas",
-    totalHoras.toFixed(2)
-  );
+    // TOTAL VALOR
+    const totalValor = fields.reduce((acc, item) => {
+      const servicoEncontrado = servico.find(
+        (s) => String(s.id_servico) === String(item.id_servico),
+      );
 
-  // TOTAL VALOR
-  const totalValor = fields.reduce((acc, item) => {
+      const valorHora = Number(
+        String(servicoEncontrado?.valor_servico || "0")
+          .replace("R$", "")
+          .replace(",", ".")
+          .trim(),
+      );
 
-    const servicoEncontrado = servico.find(
-      (s) => String(s.id_servico) === String(item.id_servico)
-    );
+      const horas = Number(item.qtd_horas_servico || 0);
 
-    const valorHora = Number(
-      String(servicoEncontrado?.valor_servico || "0")
-        .replace("R$", "")
-        .replace(",", ".")
-        .trim()
-    );
+      return acc + valorHora * horas;
+    }, 0);
 
-    const horas = Number(item.qtd_horas_servico || 0);
-
-    return acc + (valorHora * horas);
-
-  }, 0);
-
-  setValue(
-    "valor_os",
-    totalValor.toFixed(2)
-  );
-
-}, [fields, servico, setValue]);
+    setValue("valor_os", totalValor.toFixed(2));
+  }, [fields, servico, setValue]);
 
   const produtoOptions = produto.map((p) => ({
     value: p.id_produto,
@@ -143,49 +137,30 @@ export function CadastroOs() {
     value: c.id_cliente,
     label: c.nome_fantasia,
   }));
-  
-
-  const converterHoraParaDecimal = (hora: string) => {
-  const [h, m] = hora.split(":").map(Number);
-  return (h + m / 60).toFixed(2);
-  };
-
-  const calcularTotalHoras = () => {
-
-  const total = fields.reduce((acc, item) => {
-    return acc + Number(item.qtd_horas_servico || 0);
-  }, 0);
-  return total.toFixed(2);
-  };
 
   const onSubmit = async (dados: Cabecalho) => {
+    const dadosTratados: Cabecalho = {
+      ...dados,
+      status: "1",
+      id_cliente: String(dados.id_cliente),
+      id_produto: String(dados.id_produto),
 
-  const dadosTratados: Cabecalho = {
-    ...dados,
+      valor_os: String(dados.valor_os),
 
-    usuario: "admin",
-    status: "1",
-    id_cliente: String(dados.id_cliente),
-    id_produto: String(dados.id_produto),
+      total_horas_trabalhadas: String(dados.total_horas_trabalhadas),
+    };
 
-    valor_os: String(dados.valor_os),
+    console.log("Payload enviado:", dadosTratados);
 
-    total_horas_trabalhadas: String(
-      dados.total_horas_trabalhadas
-    ),
+    const sucesso = await cadastrarOrdemServico(dadosTratados);
+
+    if (sucesso) {
+      toast.success("Ordem de serviço salva com sucesso!");
+      navigate("/consultaOs");
+    } else {
+      toast.error("Erro ao salvar ordem de serviço :(");
+    }
   };
-
-  console.log("Payload enviado:", dadosTratados);
-
-  const sucesso = await cadastrarOrdemServico(dadosTratados);
-
-  if (sucesso) {
-    toast.success("Ordem de serviço salva com sucesso!");
-    navigate("/consultaOs");
-  } else {
-    toast.error("Erro ao salvar ordem de serviço :(");
-  }
-};
 
   const handleExcluir = async (dados: Cabecalho) => {
     const sucesso = await excluirOrdemServico(dados);
@@ -217,13 +192,14 @@ export function CadastroOs() {
             <Controller
               name="id_cliente"
               control={control}
+              rules={{ required: "Selecione um cliente" }}
               render={({ field }) => (
                 <Select
                   styles={customSelectStyles}
                   options={clienteOptions}
                   value={
                     clienteOptions.find(
-                      (opt) => String(opt.value) === String(field.value)
+                      (opt) => String(opt.value) === String(field.value),
                     ) || null
                   }
                   onChange={(selected) =>
@@ -233,7 +209,8 @@ export function CadastroOs() {
                   placeholder="Selecione um cliente"
                 />
               )}
-            />
+          />
+          <ErrorMessage error={errors.id_cliente?.message} />
           </div>
 
           <div>
@@ -241,6 +218,7 @@ export function CadastroOs() {
 
             <Controller
               name="id_produto"
+              rules={{ required: "Selecione um produto" }}
               control={control}
               render={({ field }) => (
                 <Select
@@ -248,7 +226,7 @@ export function CadastroOs() {
                   options={produtoOptions}
                   value={
                     produtoOptions.find(
-                      (opt) => String(opt.value) === String(field.value)
+                      (opt) => String(opt.value) === String(field.value),
                     ) || null
                   }
                   onChange={(selected) =>
@@ -259,44 +237,40 @@ export function CadastroOs() {
                 />
               )}
             />
-          </div>        
-            
+            <ErrorMessage error={errors.id_produto?.message} />
+          </div>
 
           <div>
             <label>Início</label>
-            <input 
-            type="date"
-            className="input" {...register("data_inicio")} />
+            <input type="date" className="input" {...register("data_inicio", { required: "Selecione a data de início" })} />
+            <ErrorMessage error={errors.data_inicio?.message} />
           </div>
 
           <div>
             <label>Fim</label>
-            <input 
-            type="date"
-            className="input" {...register("data_fim")} />
+            <input type="date" className="input" {...register("data_fim")} />
           </div>
 
           <div>
             <label>Horas trabalhadas</label>
-             <input
+            <input
               className="input"
               value={watch("total_horas_trabalhadas")}
               readOnly
             />
           </div>
 
-          <input
-            className="input"
-            value={watch("valor_os")}
-            readOnly
-          />
+          <div>
+            <label>Valor total</label>
+            <input className="input" value={watch("valor_os")} readOnly />
+          </div>
 
           <div>
             <label>Descrição</label>
-            <input className="obsInput" {...register("descricao")} />
+            <input className="obsInput" {...register("descricao", { required: "Digite a descrição" })} />
+            <ErrorMessage error={errors.descricao?.message} />
           </div>
         </div>
-      
 
         <button
           type="button"
@@ -347,9 +321,7 @@ export function CadastroOs() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5}>
-                    Nenhum serviço registrado
-                  </td>
+                  <td colSpan={5}>Nenhum serviço registrado</td>
                 </tr>
               )}
             </tbody>

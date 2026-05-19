@@ -5,7 +5,11 @@ import ModalCancel from "../../modais/modalCancel";
 import ModalDelete from "../../modais/modalDelete";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { cadastrarCliente, consultarClientePorId, excluirCliente } from "./Cliente.Function";
+import {
+  cadastrarCliente,
+  consultarClientePorId,
+  excluirCliente,
+} from "./Cliente.Function";
 import { Cliente, clienteVazio } from "../../../Models/cliente";
 import { useParams } from "react-router-dom";
 import { IMaskInput } from "react-imask";
@@ -42,7 +46,7 @@ export function CadastroCliente() {
   const tipo = watch("fg_tipo");
   const fg_ativo = watch("fg_ativo");
   const clienteAtual = watch();
-  
+
   useEffect(() => {
     const carregarCliente = async () => {
       if (id_cliente) {
@@ -71,9 +75,8 @@ export function CadastroCliente() {
     }
   };
 
-    const handleExcluir = async (cliente: Cliente) => {
-
-      const sucesso = await excluirCliente(cliente);
+  const handleExcluir = async (cliente: Cliente) => {
+    const sucesso = await excluirCliente(cliente);
 
     if (sucesso) {
       toast.success("Cliente excluído com sucesso!");
@@ -81,8 +84,7 @@ export function CadastroCliente() {
     } else {
       toast.error("Erro ao excluir cliente.");
     }
-
-    }
+  };
 
   return (
     <Style.Container>
@@ -123,14 +125,16 @@ export function CadastroCliente() {
               name="cpf_cnpj"
               control={control}
               rules={{
-                  required: "O campo é obrigatório", 
+                required: "O campo é obrigatório",
               }}
               render={({ field }) => (
                 <IMaskInput
                   {...field}
                   mask={tipo === "F" ? "000.000.000-00" : "00.000.000/0000-00"}
                   className="input"
-                  placeholder={tipo === "F" ? "000.000.000-00" : "00.000.000/0000-00"}
+                  placeholder={
+                    tipo === "F" ? "000.000.000-00" : "00.000.000/0000-00"
+                  }
                   onAccept={(value) => field.onChange(value)}
                 />
               )}
@@ -161,7 +165,11 @@ export function CadastroCliente() {
 
           <div>
             <label>Observação</label>
-            <input className="obsInput" type="text" {...register("observacao")} />
+            <input
+              className="obsInput"
+              type="text"
+              {...register("observacao")}
+            />
           </div>
 
           <div className="radio-wrapper">
@@ -226,7 +234,7 @@ export function CadastroCliente() {
                   mask="(00) 00000-0000"
                   className="input"
                   placeholder="(00) 00000-0000"
-                  onAccept={(value) => field.onChange(value)} 
+                  onAccept={(value) => field.onChange(value)}
                 />
               )}
             />
@@ -303,52 +311,57 @@ export function CadastroCliente() {
             <ErrorMessage error={errors.uf?.message} />
           </div>
         </div>
-
       </form>
 
-        <div className="Buttons">
-          <button type="submit" 
-                  className="Salvar"
-                    onClick={handleSubmit(onSubmit)}
-          > Salvar
-          </button>
+      <div className="Buttons">
+        <button
+          type="submit"
+          className="Salvar"
+          onClick={handleSubmit(onSubmit)}
+        >
+          {" "}
+          Salvar
+        </button>
 
-          <button
-            type="button"
-            className="Cancelar"
-            onClick={() => setOpenModal(true)}
-          > Cancelar
-          </button>
+        <button
+          type="button"
+          className="Cancelar"
+          onClick={() => setOpenModal(true)}
+        >
+          {" "}
+          Cancelar
+        </button>
 
-          <button
-            type="button"
-            className="Excluir"
-            onClick={() => setOpenModalDelete(true)}
-          > Excluir
-          </button>
-        </div>
+        <button
+          type="button"
+          className="Excluir"
+          onClick={() => setOpenModalDelete(true)}
+        >
+          {" "}
+          Excluir
+        </button>
+      </div>
 
-        <ModalCancel
-          isOpen={openModal}
-          setOpenModal={setOpenModal}
-          onConfirm={() => {
-            reset(clienteVazio);
-            setOpenModal(false);
-            navigate("/consultaCliente");
-          }}
-        />
+      <ModalCancel
+        isOpen={openModal}
+        setOpenModal={setOpenModal}
+        onConfirm={() => {
+          reset(clienteVazio);
+          setOpenModal(false);
+          navigate("/consultaCliente");
+        }}
+      />
 
-         <ModalDelete
-          isOpen={openModalDelete}
-          setOpenModal={setOpenModalDelete}
-          entidade="o cliente"
-          onConfirm={() => {
-            handleExcluir(clienteAtual)
-            reset(clienteVazio);
-            setOpenModalDelete(false);
-          }}
-        />
-      
+      <ModalDelete
+        isOpen={openModalDelete}
+        setOpenModal={setOpenModalDelete}
+        entidade="o cliente"
+        onConfirm={() => {
+          handleExcluir(clienteAtual);
+          reset(clienteVazio);
+          setOpenModalDelete(false);
+        }}
+      />
     </Style.Container>
   );
 }

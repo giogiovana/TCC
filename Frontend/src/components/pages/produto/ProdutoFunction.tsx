@@ -14,7 +14,6 @@ export async function cadastrarProduto(produto: Produto): Promise<boolean> {
 
     const response = await api.post("/produtos", produto);
     return response.status === 201;
-
   } catch (error) {
     console.error("Erro no cadastro de produto:", error);
     console.log();
@@ -34,16 +33,14 @@ export async function consultarProduto(): Promise<any> {
 }
 
 export async function excluirProduto(produto: Produto): Promise<boolean> {
-  
-    if (!produto.id_produto){
-    console.warn("Produto não encontrado")
+  if (!produto.id_produto) {
+    console.warn("Produto não encontrado");
     return false;
-    }
+  }
 
-    try {
+  try {
     const response = await api.delete(`/produtos/${produto.id_produto}`);
     return response.status === 200 || response.status === 204;
-
   } catch (error) {
     console.error("Erro na exclusão de produtos:", error);
     return false;

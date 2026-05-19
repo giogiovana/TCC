@@ -6,9 +6,8 @@ export const Container = styled.div`
   }
 
   form {
-    overflow-y: auto;  
-    flex: 1;        
-    gap: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
 
     background-color: #303030;
     padding: 1rem;
@@ -18,11 +17,11 @@ export const Container = styled.div`
 
     max-width: 100%;
     max-height: 75vh;
-    box-sizing: border-box; 
+    box-sizing: border-box;
 
     display: flex;
     flex-direction: column;
- }
+  }
 
   .input {
     all: unset;
@@ -53,7 +52,7 @@ export const Container = styled.div`
     width: 3rem;
   }
 
-  .obsInput{
+  .obsInput {
     all: unset;
     background-color: #414141;
     border: 2px solid transparent;
@@ -74,6 +73,7 @@ export const Container = styled.div`
     gap: 2rem;
     width: 100%;
     box-sizing: border-box;
+    margin: 1rem 0rem 1rem 0rem;
   }
 
   .icon {
@@ -84,23 +84,23 @@ export const Container = styled.div`
     align-items: center;
   }
 
-  .eraser{
+  .eraser {
     font-size: 1.5rem;
     align-items: center;
     color: #6b7f9e;
   }
-  
-  .inputFiltro{
+
+  .inputFiltro {
     display: flex;
     gap: 1rem;
-    margin: 1rem 0rem 1rem 0rem
+    margin: 1rem 0rem 1rem 0rem;
   }
 
-  .btnFiltro{
-    all:unset
+  .btnFiltro {
+    all: unset;
   }
 
-//Buttons
+  //Buttons
 
   .Buttons {
     display: flex;
@@ -109,11 +109,12 @@ export const Container = styled.div`
     gap: 1.2rem;
   }
 
-  button{
+  button {
     padding: 1rem;
     border-radius: 6px;
     font-size: 15px;
-    font-family: "Inter", sans-serif;    cursor: pointer;
+    font-family: "Inter", sans-serif;
+    cursor: pointer;
     min-width: 150px;
     max-width: 150px;
     font-weight: 600;
@@ -130,19 +131,18 @@ export const Container = styled.div`
     color: #ffffff;
   }
 
-  .Excluir{
+  .Excluir {
     border: 3px #c72e2e solid;
     color: #c72e2e;
     margin-left: auto;
   }
 
-   .Incluir{
+  .Incluir {
     background-color: #6b7f9e;
     color: #ffffff;
-
   }
 
-  .btnAdd{
+  .btnAdd {
     background-color: #6b7f9e;
     color: #ffffff;
   }
@@ -194,7 +194,7 @@ export const Container = styled.div`
   }
 
   .radio-custom {
-    all:unset;
+    all: unset;
     width: 16px;
     height: 16px;
     border: 2px solid #333;
@@ -222,43 +222,41 @@ export const Container = styled.div`
   }
 
   /* tabela */
-  .tableContainer{
-    max-height: 65vh; 
+  .tableContainer {
+    max-height: 65vh;
     /* min-height:  65vh;  */
-    overflow-y: auto;        
-    border-radius: 8px; 
+    overflow-y: auto;
+    border-radius: 8px;
     background-color: #333;
     z-index: 0;
-
+    margin: 1rem 0rem 1rem 0rem;
   }
-  
+
   .tableContainer table {
     border-collapse: separate;
     width: 100%;
-    border-spacing: 0
+    border-spacing: 0;
   }
 
   .tableContainer thead th {
-  position: sticky;       
-  top: 0;
-  font-weight: 600;
-  padding: 15px;
-  z-index: 5;
-  background-color: #6b7f9e;
-}
+    position: sticky;
+    top: 0;
+    font-weight: 600;
+    padding: 15px;
+    z-index: 5;
+    background-color: #6b7f9e;
+  }
 
-.tableContainer tbody td {
-  padding: 15px 10px;
-  text-align: center;
+  .tableContainer tbody td {
+    padding: 15px 10px;
+    text-align: center;
+  }
 
-}
+  .tableContainer tbody tr:nth-child(even) {
+    background-color: #3d3d3d;
+  }
 
-.tableContainer tbody tr:nth-child(even) {
-  background-color: #3d3d3d;
-}
-
-.tableContainer tbody tr:hover {
-  background-color: #181818;
-}
-
+  .tableContainer tbody tr:hover {
+    background-color: #181818;
+  }
 `;

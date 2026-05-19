@@ -5,7 +5,11 @@ import ModalCancel from "../../modais/modalCancel";
 import ModalDelete from "../../modais/modalDelete";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { cadastrarProduto, consultarProdutoPorId, excluirProduto } from "./ProdutoFunction";
+import {
+  cadastrarProduto,
+  consultarProdutoPorId,
+  excluirProduto,
+} from "./ProdutoFunction";
 import { Produto, produtoVazio } from "../../../Models/produto";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -25,7 +29,7 @@ export function CadastroProduto() {
   const [openModalDelete, setOpenModalDelete] = useState(false);
 
   const navigate = useNavigate();
-  
+
   const {
     register,
     handleSubmit,
@@ -36,9 +40,9 @@ export function CadastroProduto() {
   } = useForm<Produto>({
     defaultValues: produtoVazio,
   });
-  
+
   const produtoAtual = watch();
-  
+
   useEffect(() => {
     const carregarProduto = async () => {
       if (id_produto) {
@@ -54,7 +58,7 @@ export function CadastroProduto() {
       }
     };
 
-  carregarProduto();
+    carregarProduto();
   }, [id_produto, reset]);
 
   const onSubmit = async (dados: Produto) => {
@@ -67,9 +71,8 @@ export function CadastroProduto() {
     }
   };
 
-    const handleExcluir = async (produto: Produto) => {
-
-      const sucesso = await excluirProduto(produto);
+  const handleExcluir = async (produto: Produto) => {
+    const sucesso = await excluirProduto(produto);
 
     if (sucesso) {
       toast.success("Produto excluído com sucesso!");
@@ -77,19 +80,15 @@ export function CadastroProduto() {
     } else {
       toast.error("Erro ao excluir produto.");
     }
-
-  }
+  };
 
   return (
     <Style.Container>
-
       <p className="icon">
         <MdInventory2 /> Produtos
       </p>
 
-
-        <form onSubmit={handleSubmit(onSubmit)}>
-
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="sessao">
           <div>
             <label>ID</label>
@@ -97,7 +96,6 @@ export function CadastroProduto() {
             <ErrorMessage error={errors.id_produto?.message} />
           </div>
 
-          
           <div>
             <label>Descricao</label>
             <input
@@ -164,29 +162,34 @@ export function CadastroProduto() {
             <ErrorMessage error={errors.observacao?.message} />
           </div>
         </div>
-          
-        </form>
+      </form>
 
-        <div className="Buttons">
-        <button 
-          type="submit" 
+      <div className="Buttons">
+        <button
+          type="submit"
           className="Salvar"
           onClick={handleSubmit(onSubmit)}
-        > Salvar
+        >
+          {" "}
+          Salvar
         </button>
 
         <button
           type="button"
           className="Cancelar"
           onClick={() => setOpenModal(true)}
-        > Cancelar
+        >
+          {" "}
+          Cancelar
         </button>
 
         <button
           type="button"
           className="Excluir"
           onClick={() => setOpenModalDelete(true)}
-        > Excluir
+        >
+          {" "}
+          Excluir
         </button>
       </div>
 
@@ -205,15 +208,13 @@ export function CadastroProduto() {
         setOpenModal={setOpenModalDelete}
         entidade="o produto"
         onConfirm={() => {
-          handleExcluir(produtoAtual)
+          handleExcluir(produtoAtual);
           reset(produtoVazio);
           setOpenModalDelete(false);
         }}
       />
-
     </Style.Container>
-    
   );
-};
+}
 
 export default CadastroProduto;
