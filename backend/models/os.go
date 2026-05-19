@@ -1,17 +1,17 @@
 package models
 
 type OsCreate struct {
-	IdCliente             string `json:"id_cliente"`
-	IdProduto             string `json:"id_produto"`
-	DataInicio            string `json:"data_inicio"`
-	DataFim               string `json:"data_fim"`
-	TotalHorasTrabalhadas string `json:"total_horas_trabalhadas"`
-	ValorOs               string `json:"valor_os"`
-	Status                string `json:"status"`
-	Descricao             string `json:"descricao"`
-	Observacao            string `json:"observacao"`	
+	IdCliente             string `json:"id_cliente,omitempty"`
+	IdProduto             string `json:"id_produto,omitempty"`
+	DataInicio            string `json:"data_inicio,omitempty"`
+	DataFim               string `json:"data_fim,omitempty"`
+	TotalHorasTrabalhadas string `json:"total_horas_trabalhadas,omitempty"`
+	ValorOs               string `json:"valor_os,omitempty"`
+	Status                string `json:"status,omitempty"`
+	Descricao             string `json:"descricao,omitempty"`
+	Observacao            string `json:"observacao,omitempty"`
 
-	Itens []ControleOsCreate `json:"itens"`
+	Itens []ControleOsCreate `json:"itens,omitempty"`
 }
 
 type Os struct {
@@ -25,6 +25,8 @@ type Os struct {
 	Status                string `db:"status" json:"status"`
 	Descricao             string `db:"descricao" json:"descricao"`
 	Observacao            string `db:"observacao" json:"observacao"`
+
+	Itens []ControleOsCreate `json:"itens,omitempty"`
 }
 
 type OsComControles struct {
