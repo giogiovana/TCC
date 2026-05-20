@@ -51,7 +51,7 @@ func (a *AuthController) login(w http.ResponseWriter, r *http.Request) {
 
 	claims := jwt.RegisteredClaims{
 		Subject:   u.Login,
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(15 * time.Minute)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -65,7 +65,7 @@ func (a *AuthController) login(w http.ResponseWriter, r *http.Request) {
 	respond(w, 200, map[string]any{
 		"access_token": s,
 		"token_type":   "Bearer",
-		"expires_in":   306000,
+		"expires_in":   86400,
 		"user":         u,
 	})
 }

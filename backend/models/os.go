@@ -44,4 +44,6 @@ type OsUpdate struct {
 	Status                *string `json:"status,omitempty"`
 	Descricao             *string `json:"descricao,omitempty"`
 	Observacao            *string `json:"observacao,omitempty"`
+
+	Itens []ControleOsCreate `json:"itens"`
 }

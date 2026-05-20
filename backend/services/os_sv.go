@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"strings"
+	"fmt"
 
 	"github.com/giogiovana/TCC/database"
 	"github.com/giogiovana/TCC/models"
@@ -75,9 +76,9 @@ func (s *OsService) GetByIdComItens(ctx context.Context, id string) (models.OsCo
 	}
 
 	return models.OsComControles{
-	Os:    os,
-	Itens: controles,
-}, nil
+		Os:    os,
+		Itens: controles,
+	}, nil
 }
 
 func (s *OsService) List(ctx context.Context, limit, offset int) ([]models.Os, error) {
@@ -88,7 +89,12 @@ func (s *OsService) List(ctx context.Context, limit, offset int) ([]models.Os, e
 	return out, nil
 }
 
-func (s *OsService) Update(ctx context.Context, idOs string, in models.OsUpdate) (models.Os, error) {
+func (s *OsService) Update(
+	ctx context.Context,
+	idOs string,
+	in models.OsUpdate,
+) (models.Os, error) {
+
 	var o models.Os
 	o.IdOs = idOs
 
@@ -109,7 +115,8 @@ func (s *OsService) Update(ctx context.Context, idOs string, in models.OsUpdate)
 	}
 
 	if in.TotalHorasTrabalhadas != nil {
-		o.TotalHorasTrabalhadas = strings.TrimSpace(*in.TotalHorasTrabalhadas)
+		o.TotalHorasTrabalhadas =
+			strings.TrimSpace(*in.TotalHorasTrabalhadas)
 	}
 
 	if in.ValorOs != nil {
@@ -128,8 +135,61 @@ func (s *OsService) Update(ctx context.Context, idOs string, in models.OsUpdate)
 		o.Observacao = strings.TrimSpace(*in.Observacao)
 	}
 
-	if err := s.repo.Update(ctx, &o); err != nil {
+		fmt.Println("======== UPDATE OS ========")
+		fmt.Println("ID:", idOs)
+		fmt.Printf("CABECALHO: %+v\n", o)
+		fmt.Printf("ITENS NOVOS: %+v\n", in.Itens)
+
+
+	err := s.repo.Update(ctx, &o)
+	
+
+	if err != nil {
 		return models.Os{}, err
+	}
+
+	// remove itens antigos
+	itensAntigos, err := s.controleOsRepo.ListByOsId(ctx, idOs)
+
+	if err != nil {
+		return models.Os{}, err
+	}
+
+	for _, item := range itensAntigos {
+
+		err = s.controleOsRepo.Delete(
+			ctx,
+			item.IdControle,
+		)
+
+		if err != nil {
+			return models.Os{}, err
+		}
+
+		fmt.Println(
+			"REMOVENDO ITEM:",
+			item.IdControle,
+		)		
+	}
+
+	// recria itens enviados
+	for _, item := range in.Itens {
+
+
+		item.IdOs = idOs
+
+		_, err := s.controleOsRepo.Create(
+			ctx,
+			item,
+		)
+
+		if err != nil {
+			return models.Os{}, err
+		}
+		fmt.Printf(
+		"CRIANDO ITEM: %+v\n",
+		item,
+		)
 	}
 	return o, nil
 }
