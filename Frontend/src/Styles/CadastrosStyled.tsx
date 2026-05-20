@@ -244,14 +244,14 @@ export const Container = styled.div`
     background-color: #181818;
   }
 
-  .excluir{
+  .excluir {
     font-size: 25px;
     padding: 0;
     margin: 0;
     color: #c72e2e;
   }
 
-  .editar{
+  .editar {
     font-size: 25px;
     padding: 0;
     margin: 0;
@@ -267,32 +267,32 @@ export const Container = styled.div`
   }
 
   .status-aberta {
-  background: #3498db;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-}
+    background: #3498db;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
 
-.status-andamento {
-  background: #f39c12;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-}
+  .status-andamento {
+    background: #f39c12;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
 
-.status-finalizada {
-  background: #2ecc71;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-}
+  .status-finalizada {
+    background: #2ecc71;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
 
-.status-cancelada {
-  background: #e74c3c;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-}
+  .status-cancelada {
+    background: #e74c3c;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
 
   .disabled {
     background: #414141;

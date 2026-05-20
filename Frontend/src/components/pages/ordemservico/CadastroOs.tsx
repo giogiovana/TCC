@@ -1,35 +1,29 @@
-import * as Style from "../../../Styles/CadastrosStyled";
+import * as Style from "../../../Styles/CadastrosStyled.tsx";
 import Select from "react-select";
-import { customSelectStyles } from "../../../Styles/customSelectStyles";
-
+import { customSelectStyles } from "../../../Styles/customSelectStyles.tsx";
 import { MdInventory2 } from "react-icons/md";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
+
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { Cliente } from "../../../Models/cliente";
-import { Produto } from "../../../Models/produto";
-import { Servico } from "../../../Models/servico";
-import { Status } from "../../../Models/status";
-import { Tecnico } from "../../../Models/tecnico";
-import { cabecalhoVazio, Cabecalho } from "../../../Models/cabecalhoOs";
-
-import ModalCancel from "../../modais/modalCancel";
-import ModalDelete from "../../modais/modalDelete";
-import ModalServico from "../../modais/modalServico";
-
-import { consultarCliente } from "../cliente/Cliente.Function";
-import { consultarProduto } from "../produto/ProdutoFunction";
-import { consultarTecnico } from "../tecnicos/TecnicoFunction";
 import {
-  consultarServico,
+  Cliente,
+  Produto,
+  Servico,
+  Status,
+  Tecnico,
+  cabecalhoVazio,
+  Cabecalho,
+} from "../../../Models/index";
+import { ModalCancel, ModalDelete, ModalServico } from "../../modais/index.tsx";
+import { carregarLookups } from "../../../services/LookupService.tsx";
+import {
   cadastrarOrdemServico,
   consultarOrdemServicoPorId,
-  excluirOrdemServico,  
-  consultarStatus
-} from "./OsFunction";
+  excluirOrdemServico} from "../../../services/index.tsx";
 
 type ErrorMessageProps = {
   error?: string;
@@ -70,72 +64,69 @@ export function CadastroOs() {
 
   const ordemAtual = watch();
 
-  const { fields, append, remove, replace,update } = useFieldArray({
+  const { fields, append, remove, replace, update } = useFieldArray({
     control,
     name: "itens",
   });
 
- useEffect(() => {
-  const carregarOrdem = async () => {
-    if (id_os) {
-      const data = await consultarOrdemServicoPorId(id_os);
-      console.log("📦 OS carregada:", data);
-      if (data && typeof data !== "boolean") {
-        reset(data);
-        replace(data.itens || []);
+  useEffect(() => {
+    const carregarOrdem = async () => {
+      if (id_os) {
+        const data = await consultarOrdemServicoPorId(id_os);
+        console.log("📦 OS carregada:", data);
+        if (data && typeof data !== "boolean") {
+          reset(data);
+          replace(data.itens || []);
+        }
+      } else {
+        reset(cabecalhoVazio);
+        replace([]);
       }
-    } else {
-      reset(cabecalhoVazio);
-      replace([]);
-    }
-  };
-  carregarOrdem();
-}, [id_os, reset, replace]);
+    };
+    carregarOrdem();
+  }, [id_os, reset, replace]);
 
   useEffect(() => {
-    const carregarDados = async () => {
-      const produtos = await consultarProduto();
-      const clientes = await consultarCliente();
-      const servicos = await consultarServico();
-      const tecnicos = await consultarTecnico();
-      const status = await consultarStatus();
+    async function carregarDados() {
+      const { clientes, produtos, status, servicos, tecnicos } =
+        await carregarLookups();
 
       setProduto(produtos || []);
       setCliente(clientes || []);
       setServico(servicos || []);
       setTecnico(tecnicos || []);
       setStatus(status || null);
-    };
+    }
 
     carregarDados();
   }, []);
 
- useEffect(() => {
-  const totalHoras = fields.reduce((acc, item) => {
-    return acc + Number(item.qtd_horas_servico || 0);
-  }, 0);
+  useEffect(() => {
+    const totalHoras = fields.reduce((acc, item) => {
+      return acc + Number(item.qtd_horas_servico || 0);
+    }, 0);
 
-  setValue("total_horas_trabalhadas", totalHoras.toFixed(2));
+    setValue("total_horas_trabalhadas", totalHoras.toFixed(2));
 
-  const totalValor = fields.reduce((acc, item) => {
-    const servicoEncontrado = servico.find(
-      (s) => String(s.id_servico) === String(item.id_servico)
-    );
+    const totalValor = fields.reduce((acc, item) => {
+      const servicoEncontrado = servico.find(
+        (s) => String(s.id_servico) === String(item.id_servico),
+      );
 
-    const valorHora = Number(
-      String(servicoEncontrado?.valor_servico || "0")
-        .replace("R$", "")
-        .replace(",", ".")
-        .trim()
-    );
+      const valorHora = Number(
+        String(servicoEncontrado?.valor_servico || "0")
+          .replace("R$", "")
+          .replace(",", ".")
+          .trim(),
+      );
 
-    const horas = Number(item.qtd_horas_servico || 0);
+      const horas = Number(item.qtd_horas_servico || 0);
 
-    return acc + valorHora * horas;
-  }, 0);
+      return acc + valorHora * horas;
+    }, 0);
 
-  setValue("valor_os", totalValor.toFixed(2));
-}, [fields, servico, setValue]);
+    setValue("valor_os", totalValor.toFixed(2));
+  }, [fields, servico, setValue]);
 
   const produtoOptions = produto.map((p) => ({
     value: p.id_produto,
@@ -183,12 +174,11 @@ export function CadastroOs() {
   };
 
   const getTecnicoNome = (id: string) => {
-  return (
-    tecnico.find(
-      (t) => String(t.id_tecnico) === String(id)
-    )?.nome_fantasia || id
-  );
-};
+    return (
+      tecnico.find((t) => String(t.id_tecnico) === String(id))?.nome_fantasia ||
+      id
+    );
+  };
 
   return (
     <Style.Container>
@@ -226,8 +216,8 @@ export function CadastroOs() {
                   placeholder="Selecione um cliente"
                 />
               )}
-          />
-          <ErrorMessage error={errors.id_cliente?.message} />
+            />
+            <ErrorMessage error={errors.id_cliente?.message} />
           </div>
 
           <div>
@@ -259,7 +249,13 @@ export function CadastroOs() {
 
           <div>
             <label>Início</label>
-            <input type="date" className="input" {...register("data_inicio", { required: "Selecione a data de início" })} />
+            <input
+              type="date"
+              className="input"
+              {...register("data_inicio", {
+                required: "Selecione a data de início",
+              })}
+            />
             <ErrorMessage error={errors.data_inicio?.message} />
           </div>
 
@@ -284,7 +280,10 @@ export function CadastroOs() {
 
           <div>
             <label>Descrição</label>
-            <input className="obsInput" {...register("descricao", { required: "Digite a descrição" })} />
+            <input
+              className="obsInput"
+              {...register("descricao", { required: "Digite a descrição" })}
+            />
             <ErrorMessage error={errors.descricao?.message} />
           </div>
 
@@ -311,8 +310,8 @@ export function CadastroOs() {
                   placeholder="Selecione um status"
                 />
               )}
-          />
-          <ErrorMessage error={errors.status?.message} />
+            />
+            <ErrorMessage error={errors.status?.message} />
           </div>
         </div>
 
@@ -347,25 +346,27 @@ export function CadastroOs() {
                     <td>{item.data_fim}</td>
                     <td>{item.qtd_horas_servico}</td>
                     <td>
-                    <div className="acoes">
+                      <div className="acoes">
+                        <button
+                          type="button"
+                          className="excluir"
+                          onClick={() => remove(index)}
+                        >
+                          {" "}
+                          <FaTrashAlt />
+                        </button>
 
-                      <button
-                        type="button"
-                        className="excluir"
-                        onClick={() => remove(index)}
-                      > <FaTrashAlt />
-                      </button>
-
-                      <button
-                        type="button"
-                        className="editar"
-                        onClick={() => {
-                          setItemEditando(index);
-                          setOpenModalServico(true);
-                        }}
-                      > <FaEdit />
-                      </button>
-
+                        <button
+                          type="button"
+                          className="editar"
+                          onClick={() => {
+                            setItemEditando(index);
+                            setOpenModalServico(true);
+                          }}
+                        >
+                          {" "}
+                          <FaEdit />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -429,37 +430,26 @@ export function CadastroOs() {
 
       <ModalServico
         isOpen={openModalServico}
-
-        itemInicial={
-            itemEditando !== null
-              ? fields[itemEditando]
-              : undefined
-          }
-
+        itemInicial={itemEditando !== null ? fields[itemEditando] : undefined}
         onClose={() => {
           setOpenModalServico(false);
           setItemEditando(null);
         }}
-
         onSave={(item) => {
+          const itemNovo = {
+            ...item,
+            id_os: watch("id_os"),
+          };
 
-        const itemNovo = {
-          ...item,
-          id_os: watch("id_os"),
-        };
-
-        if (itemEditando !== null) {
-          update(
-            itemEditando,
-            itemNovo,
-          );
-        } else {
-          append(itemNovo);
-        }
-        setItemEditando(null);
-        setOpenModalServico(false);
-      }}
-    />
+          if (itemEditando !== null) {
+            update(itemEditando, itemNovo);
+          } else {
+            append(itemNovo);
+          }
+          setItemEditando(null);
+          setOpenModalServico(false);
+        }}
+      />
     </Style.Container>
   );
 }

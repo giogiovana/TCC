@@ -1,5 +1,5 @@
-import api from "../../../api";
-import { Cliente } from "../../../Models/cliente";
+import api from "../api";
+import { Cliente } from "../Models/cliente";
 
 export async function cadastrarCliente(cliente: Cliente): Promise<boolean> {
   try {

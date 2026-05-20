@@ -1,5 +1,5 @@
 import * as Style from "../../../Styles/CadastrosStyled";
-import { consultarProduto } from "./ProdutoFunction";
+import { consultarProduto } from "../../../services/ProdutoService";
 import { useEffect, useState } from "react";
 import { Produto } from "../../../Models/produto";
 import { useNavigate } from "react-router-dom";

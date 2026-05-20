@@ -1,16 +1,12 @@
- import * as Style from "../../Styles/modalServ.Styles";
+import * as Style from "../../Styles/modalServ.Styles";
 import { customSelectStyles } from "../../Styles/customSelectStyles";
-
-import { Itens, itensVazios } from "../../Models/itensOs";
-import { Servico } from "../../Models/servico";
-import { Tecnico } from "../../Models/tecnico";
 
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import { useForm, Controller } from "react-hook-form";
 
-import { consultarTecnico } from "../pages/tecnicos/TecnicoFunction";
-import { consultarServico } from "../pages/ordemservico/OsFunction";
+import { carregarLookups } from "../../services/LookupService";
+import { Itens, itensVazios, Servico, Tecnico } from "../../Models/index";
 
 type ErrorMessageProps = {
   error?: string;
@@ -54,18 +50,14 @@ export default function ModalServico({
   const idServicoSelecionado = watch("id_servico");
 
   useEffect(() => {
-    if (!isOpen) return;
-
     async function carregarDados() {
-      const servicos = await consultarServico();
-      const tecnicos = await consultarTecnico();
+      const { servicos, tecnicos } = await carregarLookups();
 
       setServico(Array.isArray(servicos) ? servicos : []);
       setTecnico(Array.isArray(tecnicos) ? tecnicos : []);
     }
-
     carregarDados();
-  }, [isOpen]);
+  }, []);
 
   useEffect(() => {
     if (itemInicial) {
@@ -95,7 +87,6 @@ export default function ModalServico({
       id_tecnico: String(data.id_tecnico),
 
       qtd_horas_servico: String(data.qtd_horas_servico),
-    
     };
 
     onSave(itemFinal);
@@ -174,7 +165,9 @@ export default function ModalServico({
                 <input
                   type="date"
                   className="date-input"
-                  {...register("data_inicio", {required: "Digite a data de início"})}
+                  {...register("data_inicio", {
+                    required: "Digite a data de início",
+                  })}
                 />
                 <ErrorMessage error={errors.data_inicio?.message} />
               </div>
@@ -202,11 +195,16 @@ export default function ModalServico({
               <div>
                 <label>Horas trabalhadas </label>
                 <input
-                    type="number"
-                    className="date-input"
-                    step="0.01"
-                    min="0" 
-                  {...register("qtd_horas_servico", { required: "Digite a quantidade de horas" })}
+                  className="date-input"
+                  step="0.01"
+                  min="0"
+                  {...register("qtd_horas_servico", {
+                    required: "Digite a quantidade de horas",
+                    pattern: {
+                                value: /^\d+$/,
+                                message: "Digite apenas números",
+                              },
+                  })}
                 />
                 <ErrorMessage error={errors.qtd_horas_servico?.message} />
               </div>

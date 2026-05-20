@@ -1,19 +1,17 @@
-import * as Style from "../../../Styles/CadastrosStyled";
+import * as Style from "../../../Styles/CadastrosStyled.tsx";
 import { MdPerson } from "react-icons/md";
 import { useForm, Controller } from "react-hook-form";
-import ModalCancel from "../../modais/modalCancel";
-import ModalDelete from "../../modais/modalDelete";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { IMaskInput } from "react-imask";
+import { toast } from "react-toastify";
 import {
   cadastrarCliente,
   consultarClientePorId,
   excluirCliente,
-} from "./Cliente.Function";
-import { Cliente, clienteVazio } from "../../../Models/cliente";
-import { useParams } from "react-router-dom";
-import { IMaskInput } from "react-imask";
-import { toast } from "react-toastify";
+} from "../../../services/index.tsx";
+import { Cliente, clienteVazio } from "../../../Models/cliente.tsx";
+import { ModalCancel, ModalDelete, ModalServico } from "../../modais/index.tsx";
 
 type ErrorMessageProps = {
   error?: string;

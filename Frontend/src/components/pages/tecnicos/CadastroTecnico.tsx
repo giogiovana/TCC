@@ -1,19 +1,17 @@
-import * as Style from "../../../Styles/CadastrosStyled";
+import * as Style from "../../../Styles/CadastrosStyled.tsx";
 import { GrUserWorker } from "react-icons/gr";
 import { useForm, Controller } from "react-hook-form";
-import ModalCancel from "../../modais/modalCancel";
-import ModalDelete from "../../modais/modalDelete";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { IMaskInput } from "react-imask";
+import { toast } from "react-toastify";
 import {
   cadastrarTecnico,
   consultarTecnicoPorId,
   excluirTecnico,
-} from "./TecnicoFunction";
-import { Tecnico, tecnicoVazio } from "../../../Models/tecnico";
-import { useParams } from "react-router-dom";
-import { IMaskInput } from "react-imask";
-import { toast } from "react-toastify";
+} from "../../../services/index.tsx";
+import { Tecnico, tecnicoVazio } from "../../../Models/index.tsx";
+import { ModalDelete, ModalCancel } from "../../modais/index.tsx";
 
 type ErrorMessageProps = {
   error?: string;
@@ -66,6 +64,7 @@ export const CadastroTecnico = () => {
   }, [id_tecnico, reset]);
 
   const onSubmit = async (dados: Tecnico) => {
+    
     const sucesso = await cadastrarTecnico(dados);
     if (sucesso) {
       toast.success("Tecnico salvo com sucesso!");
@@ -89,7 +88,7 @@ export const CadastroTecnico = () => {
   return (
     <Style.Container>
       <p className="icon">
-        <GrUserWorker /> Tecnicos
+        <GrUserWorker /> Técnicos
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)}>

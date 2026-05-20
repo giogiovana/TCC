@@ -1,18 +1,13 @@
-import * as Style from "../../../Styles/CadastrosStyled";
+import * as Style from "../../../Styles/CadastrosStyled.tsx";
 import { MdInventory2 } from "react-icons/md";
 import { useForm } from "react-hook-form";
-import ModalCancel from "../../modais/modalCancel";
-import ModalDelete from "../../modais/modalDelete";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  cadastrarProduto,
-  consultarProdutoPorId,
-  excluirProduto,
-} from "./ProdutoFunction";
-import { Produto, produtoVazio } from "../../../Models/produto";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+
+import { cadastrarProduto, consultarProdutoPorId, excluirProduto} from "../../../services/ProdutoService.tsx";
+import { ModalDelete, ModalCancel } from "../../modais/index.tsx";
+import { Produto, produtoVazio } from "../../../Models/produto.tsx";
 
 type ErrorMessageProps = {
   error?: string;

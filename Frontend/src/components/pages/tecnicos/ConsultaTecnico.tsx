@@ -1,5 +1,5 @@
 import * as Style from "../../../Styles/CadastrosStyled";
-import { consultarTecnico } from "./TecnicoFunction";
+import { consultarTecnico } from "../../../services/TecnicoService";
 import { useEffect, useState } from "react";
 import { Tecnico } from "../../../Models/tecnico";
 import { useNavigate } from "react-router-dom";

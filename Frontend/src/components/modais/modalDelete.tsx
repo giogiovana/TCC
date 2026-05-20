@@ -7,7 +7,7 @@ type ModalProps = {
   entidade: string;
 };
 
-export default function Modal({
+export default function ModalDelete({
   isOpen,
   setOpenModal,
   onConfirm,

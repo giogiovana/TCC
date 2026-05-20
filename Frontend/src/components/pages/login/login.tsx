@@ -1,6 +1,6 @@
 import * as Style from "../../../Styles/login.Styled";
 import { useState } from "react";
-import { Log } from "./login.Function";
+import { Log } from "../../../services/AuthService";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 
 type Props = {

@@ -1,23 +1,17 @@
 import * as Style from "../../../Styles/CadastrosStyled";
-import { customSelectStyles } from "../../../Styles/customSelectStyles";
-
-import { useEffect, useState } from "react";
-
-import { consultarOrdemServico, consultarStatus } from "./OsFunction";
-import { consultarCliente } from "../cliente/Cliente.Function";
-
-import { Cabecalho } from "../../../Models/cabecalhoOs";
-import { Cliente } from "../../../Models/cliente";
-import { Status } from "../../../Models/status";
-
 import { useNavigate } from "react-router-dom";
 import { MdInventory2 } from "react-icons/md";
+import { useEffect, useState } from "react";
+import { carregarLookups } from "../../../services/LookupService";
+import { Cabecalho, Cliente, Status } from "../../../Models/index";
 
 export const consultarOs = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [status, setStatus] = useState<Status[]>([]);
   const [ordemservicos, setOrdemServicos] = useState<Cabecalho[]>([]);
-  const [OrdemServicosFiltrados, setOrdemServicosFiltrados] = useState<Cabecalho[]>([]);
+  const [OrdemServicosFiltrados, setOrdemServicosFiltrados] = useState<
+    Cabecalho[]
+  >([]);
   const navigate = useNavigate();
 
   const [filtros, setFiltros] = useState({
@@ -27,83 +21,72 @@ export const consultarOs = () => {
   });
 
   useEffect(() => {
-  let filtrados = [...ordemservicos];
+    let filtrados = [...ordemservicos];
 
-  if (filtros.id.trim() !== "") {
-    filtrados = filtrados.filter((os) =>
-      String(os.id_os).includes(filtros.id)
-    );
-  }
+    if (filtros.id.trim() !== "") {
+      filtrados = filtrados.filter((os) =>
+        String(os.id_os).includes(filtros.id),
+      );
+    }
 
-  if (filtros.id_cliente.trim() !== "") {
-    filtrados = filtrados.filter((os) =>
-      getClienteNome(os.id_cliente)
-        .toLowerCase()
-        .includes(filtros.id_cliente.toLowerCase())
-    );
-  }
+    if (filtros.id_cliente.trim() !== "") {
+      filtrados = filtrados.filter((os) =>
+        getClienteNome(os.id_cliente)
+          .toLowerCase()
+          .includes(filtros.id_cliente.toLowerCase()),
+      );
+    }
 
-  if (filtros.status.trim() !== "") {
-    filtrados = filtrados.filter((os) =>
-      getStatusDescricao(os.status)
-        .toLowerCase()
-        .includes(filtros.status.toLowerCase())
-    );
-  }
+    if (filtros.status.trim() !== "") {
+      filtrados = filtrados.filter((os) =>
+        getStatusDescricao(os.status)
+          .toLowerCase()
+          .includes(filtros.status.toLowerCase()),
+      );
+    }
 
-  setOrdemServicosFiltrados(filtrados);
-
-}, [filtros, ordemservicos, clientes, status]);
+    setOrdemServicosFiltrados(filtrados);
+  }, [filtros, ordemservicos, clientes, status]);
 
   useEffect(() => {
-    async function carregarOrdemServico() {
+    async function carregarDados() {
+      const { clientes, ordensServico, status } = await carregarLookups();
 
-      const data = await consultarOrdemServico();
-      const lista = Array.isArray(data) ? data : [];
-      const listaClientes = await consultarCliente();
-      const listaStatus = await consultarStatus();
-      
-      setOrdemServicos(lista);
-      setOrdemServicosFiltrados(lista);
-      setClientes(listaClientes || []);
-      setStatus(listaStatus || []);
+      setClientes(clientes);
+      setStatus(status);
+      setOrdemServicos(ordensServico);
+      setOrdemServicosFiltrados(ordensServico);
     }
-    carregarOrdemServico();
+
+    carregarDados();
   }, []);
-  
+
   const getClienteNome = (id: string) => {
-  return (
-    clientes.find(
-      (c) => String(c.id_cliente) === String(id)
-    )?.nome_fantasia || id
-  );
-};
+    return (
+      clientes.find((c) => String(c.id_cliente) === String(id))
+        ?.nome_fantasia || id
+    );
+  };
 
-const getStatusDescricao = (id: string) => {
-  return (
-    status.find(
-      (s) => String(s.id_status) === String(id)
-    )?.descricao || id
-  );
-};
+  const getStatusDescricao = (id: string) => {
+    return (
+      status.find((s) => String(s.id_status) === String(id))?.descricao || id
+    );
+  };
 
-const getStatusClass = (id: string) => {
-  const descricao = getStatusDescricao(id).toLowerCase();
+  const getStatusClass = (id: string) => {
+    const descricao = getStatusDescricao(id).toLowerCase();
 
-  if (descricao.includes("aberta"))
-    return "status-aberta";
+    if (descricao.includes("aberta")) return "status-aberta";
 
-  if (descricao.includes("andamento"))
-    return "status-andamento";
+    if (descricao.includes("andamento")) return "status-andamento";
 
-  if (descricao.includes("finalizada"))
-    return "status-finalizada";
+    if (descricao.includes("finalizada")) return "status-finalizada";
 
-  if (descricao.includes("cancelada"))
-    return "status-cancelada";
+    if (descricao.includes("cancelada")) return "status-cancelada";
 
-  return "";
-};
+    return "";
+  };
 
   const handleRowClick = (id_os: string) => {
     if (id_os) navigate(`/CadastroOs/${id_os}`);
@@ -139,30 +122,27 @@ const getStatusClass = (id: string) => {
         </div>
 
         <div>
-        <label>Status</label>
+          <label>Status</label>
 
-        <select
-          className="input"
-          value={filtros.status}
-          onChange={(e) =>
-            setFiltros({
-              ...filtros,
-              status: e.target.value,
-            })
-          }
-        >
-          <option value="">Todos</option>
+          <select
+            className="input"
+            value={filtros.status}
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                status: e.target.value,
+              })
+            }
+          >
+            <option value="">Todos</option>
 
-          {status.map((s) => (
-            <option
-              key={s.id_status}
-              value={s.descricao}
-            >
-              {s.descricao}
-            </option>
-          ))}
-        </select>
-      </div>
+            {status.map((s) => (
+              <option key={s.id_status} value={s.descricao}>
+                {s.descricao}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="tableContainer">
@@ -190,9 +170,9 @@ const getStatusClass = (id: string) => {
                   <td>{ordemservico.descricao}</td>
                   <td>{ordemservico.data_inicio}</td>
                   <td>
-                      <span className={getStatusClass(ordemservico.status)}>
-                        {getStatusDescricao(ordemservico.status)}
-                      </span> 
+                    <span className={getStatusClass(ordemservico.status)}>
+                      {getStatusDescricao(ordemservico.status)}
+                    </span>
                   </td>
                 </tr>
               ))

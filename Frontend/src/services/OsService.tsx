@@ -1,5 +1,5 @@
-import api from "../../../api";
-import { Cabecalho } from "../../../Models/cabecalhoOs";
+import api from "../api";
+import { Cabecalho } from "../Models/cabecalhoOs";
 
 export async function cadastrarOrdemServico(
   cabecalho: Cabecalho,
@@ -13,12 +13,9 @@ export async function cadastrarOrdemServico(
         cabecalho,
       );
 
-    console.log(
-      "UPDATE STATUS:",
-      response.status,
-    );
+      console.log("UPDATE STATUS:", response.status);
 
-      return (response.status === 200) || (response.status === 202);
+      return response.status === 200 || response.status === 202;
     }
 
     const response = await api.post("/ordens-servico", cabecalho);
@@ -63,16 +60,16 @@ export async function excluirOrdemServico(
   try {
     const response = await api.delete(`/ordens-servico/${ordemservico.id_os}`);
     return response.status === 200 || response.status === 204;
-  } catch (error:any) {
-  console.error("Erro na exclusão");
+  } catch (error: any) {
+    console.error("Erro na exclusão");
 
-  if (error.response) {
-    console.log("STATUS:", error.response.status);
-    console.log("MSG:", error.response.data);
+    if (error.response) {
+      console.log("STATUS:", error.response.status);
+      console.log("MSG:", error.response.data);
+    }
+
+    return false;
   }
-
-  return false;
-}
 }
 
 export async function consultarOrdemServicoPorId(
@@ -94,17 +91,6 @@ export async function consultarOrdemServicoPorId(
     } else {
       console.error("Erro:", error.message);
     }
-    return false;
-  }
-}
-
-export async function consultarServico(): Promise<any> {
-  try {
-    const response = await api.get("/servicos");
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Erro na consulta de ordens de serviço:", error);
     return false;
   }
 }

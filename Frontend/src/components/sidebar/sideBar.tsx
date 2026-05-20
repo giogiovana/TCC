@@ -1,7 +1,13 @@
 import * as Style from "../../Styles/SideBarStyled";
 import UserTag from "./UserTag";
 import { NavLink } from "react-router-dom";
-import { MdHome, MdPerson, MdInventory2, MdBuild } from "react-icons/md";
+import {
+  MdHome,
+  MdPerson,
+  MdInventory2,
+  MdBuild,
+  MdSettings,
+} from "react-icons/md";
 import { GrUserWorker } from "react-icons/gr";
 
 type SideBarProps = {
@@ -51,6 +57,15 @@ export const SideBar = ({ onLogout }: SideBarProps) => {
                 className={({ isActive }) => (isActive ? "active" : "")}
               >
                 <GrUserWorker className="icon" /> Técnicos
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink
+                to="/ConsultaServico"
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                <MdSettings className="icon" /> Serviços
               </NavLink>
             </li>
 

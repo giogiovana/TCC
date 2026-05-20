@@ -6,7 +6,11 @@ type ModalProps = {
   setOpenModal: (open: boolean) => void;
 };
 
-export default function Modal({ isOpen, setOpenModal, onConfirm }: ModalProps) {
+export default function ModalCancel({
+  isOpen,
+  setOpenModal,
+  onConfirm,
+}: ModalProps) {
   if (!isOpen) return null;
 
   return (

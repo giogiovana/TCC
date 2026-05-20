@@ -6,7 +6,11 @@ type ModalProps = {
   setOpenModal: (open: boolean) => void;
 };
 
-export default function Modal({ isOpen, setOpenModal, onLogout }: ModalProps) {
+export default function ModalLogout({
+  isOpen,
+  setOpenModal,
+  onLogout,
+}: ModalProps) {
   if (!isOpen) return null;
 
   return (

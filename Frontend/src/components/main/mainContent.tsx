@@ -3,12 +3,18 @@ import * as Style from "../../Styles/main.Styled";
 import Home from "../pages/home/Home";
 import CadastroCliente from "../pages/cliente/CadastroCliente";
 import ConsultaCliente from "../pages/cliente/ConsultaCliente";
+
 import CadastroProduto from "../pages/produto/CadastroProdutos";
 import ConsultaProduto from "../pages/produto/ConsultaProduto";
+
 import CadastroTecnico from "../pages/tecnicos/CadastroTecnico";
 import ConsultaTecnico from "../pages/tecnicos/ConsultaTecnico";
+
 import ConsultaOs from "../pages/ordemservico/ConsultaOs";
 import CadastroOs from "../pages/ordemservico/CadastroOs";
+
+import CadastroServico from "../pages/Servico/CadastroServico";
+import ConsultaServico from "../pages/Servico/ConsultaServico";
 
 export const MainContent = () => {
   return (
@@ -17,23 +23,33 @@ export const MainContent = () => {
         <div className="content">
           <Routes>
             <Route path="/" element={<Home />} />
+
             <Route path="/ConsultaCliente" element={<ConsultaCliente />} />
             <Route
               path="/CadastroCliente/:id_cliente?"
               element={<CadastroCliente />}
             />
+
             <Route path="/ConsultaProduto" element={<ConsultaProduto />} />
             <Route
               path="/CadastroProduto/:id_produto?"
               element={<CadastroProduto />}
             />
+
             <Route path="/ConsultaTecnico" element={<ConsultaTecnico />} />
             <Route
               path="/CadastroTecnico/:id_tecnico?"
               element={<CadastroTecnico />}
             />
+
             <Route path="/ConsultaOs" element={<ConsultaOs />} />
             <Route path="/CadastroOs/:id_os?" element={<CadastroOs />} />
+
+            <Route path="/ConsultaServico" element={<ConsultaServico />} />
+            <Route
+              path="/CadastroServico/:id_servico?"
+              element={<CadastroServico />}
+            />
           </Routes>
         </div>
       </Style.Container>

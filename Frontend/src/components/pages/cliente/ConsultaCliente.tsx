@@ -1,9 +1,9 @@
 import * as Style from "../../../Styles/CadastrosStyled";
-import { consultarCliente } from "./Cliente.Function";
 import { useEffect, useState } from "react";
-import { Cliente } from "../../../Models/cliente";
 import { useNavigate } from "react-router-dom";
 import { MdPerson } from "react-icons/md";
+import { Cliente } from "../../../Models/cliente";
+import { consultarCliente } from "../../../services/ClienteService";
 
 export function ConsultaCliente() {
   const [clientes, setClientes] = useState<Cliente[]>([]);

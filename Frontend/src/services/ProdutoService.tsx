@@ -1,5 +1,5 @@
-import api from "../../../api";
-import { Produto } from "../../../Models/produto";
+import api from "../api";
+import { Produto } from "../Models/produto";
 
 export async function cadastrarProduto(produto: Produto): Promise<boolean> {
   try {
@@ -9,7 +9,8 @@ export async function cadastrarProduto(produto: Produto): Promise<boolean> {
         produto,
       );
       console.log(response.status);
-      return response.status === 200;
+      return response.status >= 200 &&
+       response.status < 300;
     }
 
     const response = await api.post("/produtos", produto);
