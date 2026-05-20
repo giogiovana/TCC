@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import * as Style from "../../Styles/main.Styled";
-import Home from "../pages/home/Home";
+
 import CadastroCliente from "../pages/cliente/CadastroCliente";
 import ConsultaCliente from "../pages/cliente/ConsultaCliente";
 
@@ -10,8 +10,8 @@ import ConsultaProduto from "../pages/produto/ConsultaProduto";
 import CadastroTecnico from "../pages/tecnicos/CadastroTecnico";
 import ConsultaTecnico from "../pages/tecnicos/ConsultaTecnico";
 
-import ConsultaOs from "../pages/ordemservico/ConsultaOs";
-import CadastroOs from "../pages/ordemservico/CadastroOs";
+import ConsultaOs from "../pages/OrdemServico/ConsultaOs";
+import CadastroOs from "../pages/OrdemServico/CadastroOs";
 
 import CadastroServico from "../pages/Servico/CadastroServico";
 import ConsultaServico from "../pages/Servico/ConsultaServico";
@@ -22,7 +22,6 @@ export const MainContent = () => {
       <Style.Container>
         <div className="content">
           <Routes>
-            <Route path="/" element={<Home />} />
 
             <Route path="/ConsultaCliente" element={<ConsultaCliente />} />
             <Route

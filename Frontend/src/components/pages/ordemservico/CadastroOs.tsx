@@ -1,7 +1,7 @@
 import * as Style from "../../../Styles/CadastrosStyled.tsx";
 import Select from "react-select";
 import { customSelectStyles } from "../../../Styles/customSelectStyles.tsx";
-import { MdInventory2 } from "react-icons/md";
+import { MdBuild } from "react-icons/md";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 
 import { useForm, useFieldArray, Controller } from "react-hook-form";
@@ -183,7 +183,7 @@ export function CadastroOs() {
   return (
     <Style.Container>
       <p className="icon">
-        <MdInventory2 /> Ordens de serviço
+        <MdBuild /> Ordens de serviço
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)}>

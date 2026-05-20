@@ -1,6 +1,6 @@
 import * as Style from "../../../Styles/CadastrosStyled";
 import { useNavigate } from "react-router-dom";
-import { MdInventory2 } from "react-icons/md";
+import { MdBuild } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { carregarLookups } from "../../../services/LookupService";
 import { Cabecalho, Cliente, Status } from "../../../Models/index";
@@ -79,7 +79,7 @@ export const consultarOs = () => {
 
     if (descricao.includes("aberta")) return "status-aberta";
 
-    if (descricao.includes("andamento")) return "status-andamento";
+    if (descricao.includes("atendimento") || descricao.includes("aguardando") ) return "status-andamento";
 
     if (descricao.includes("finalizada")) return "status-finalizada";
 
@@ -95,7 +95,7 @@ export const consultarOs = () => {
   return (
     <Style.Container>
       <p className="icon">
-        <MdInventory2 /> Ordens de serviço
+        <MdBuild /> Ordens de serviço
       </p>
 
       <div className="inputFiltro">
@@ -153,6 +153,7 @@ export const consultarOs = () => {
               <th>Cliente</th>
               <th>Seviço</th>
               <th>Abertura</th>
+              <th>Conclusão</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -169,6 +170,7 @@ export const consultarOs = () => {
                   <td>{getClienteNome(ordemservico.id_cliente)}</td>
                   <td>{ordemservico.descricao}</td>
                   <td>{ordemservico.data_inicio}</td>
+                  <td>{ordemservico.data_fim}</td>
                   <td>
                     <span className={getStatusClass(ordemservico.status)}>
                       {getStatusDescricao(ordemservico.status)}
@@ -178,7 +180,7 @@ export const consultarOs = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={5}>Nenhuma ordem de serviço encontrada</td>
+                <td colSpan={6}>Nenhuma ordem de serviço encontrada</td>
               </tr>
             )}
           </tbody>

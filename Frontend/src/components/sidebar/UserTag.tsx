@@ -27,10 +27,6 @@ export const UserTag = ({ onLogout }: UserTagProps) => {
             <button className="logout" onClick={() => setOpenModal(true)}>
               <MdLogout className="logout-icon" />
             </button>
-
-            <button className="config">
-              <MdSettings className="settings-icon" />
-            </button>
           </section>
 
           <Modal

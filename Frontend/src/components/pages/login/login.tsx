@@ -73,7 +73,7 @@ export default function Login({ onLogin }: Props) {
           <button className="button1" type="submit">
             Entrar
           </button>
-          <p className="p">TCC foda da Gio e do Bruno 0.0.1</p>
+          <p className="p">TCC da Gio e do Bruno 0.0.1</p>
         </section>
       </form>
 

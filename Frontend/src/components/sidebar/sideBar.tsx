@@ -2,7 +2,6 @@ import * as Style from "../../Styles/SideBarStyled";
 import UserTag from "./UserTag";
 import { NavLink } from "react-router-dom";
 import {
-  MdHome,
   MdPerson,
   MdInventory2,
   MdBuild,
@@ -21,13 +20,14 @@ export const SideBar = ({ onLogout }: SideBarProps) => {
         <UserTag onLogout={onLogout} />
         <nav className="Links">
           <ul>
+            <li className="section-title">Gerenciamento</li>
+
             <li>
               <NavLink
-                to="/"
-                end
+                to="/ConsultaOs"
                 className={({ isActive }) => (isActive ? "active" : "")}
               >
-                <MdHome className="icon" /> Home
+                <MdBuild className="icon" /> Ordens de serviço
               </NavLink>
             </li>
 
@@ -68,24 +68,13 @@ export const SideBar = ({ onLogout }: SideBarProps) => {
                 <MdSettings className="icon" /> Serviços
               </NavLink>
             </li>
-
-            <li className="section-title">Gerenciamento</li>
-
-            <li>
-              <NavLink
-                to="/ConsultaOs"
-                className={({ isActive }) => (isActive ? "active" : "")}
-              >
-                <MdBuild className="icon" /> Ordens de serviço
-              </NavLink>
-            </li>
           </ul>
         </nav>
       </div>
 
       <div className="logo">
         <img src="src/assets/Logo.png" alt="Logo" />
-        <p className="p">TCC foda da Gio e do Bruno 0.0.1</p>
+        <p className="p">TCC da Gio e do Bruno 0.0.1</p>
       </div>
     </Style.Container>
   );

@@ -71,7 +71,7 @@ export default function ModalServico({
 
   const servicoOptions = servico.map((s) => ({
     value: s.id_servico,
-    label: `${s.nome} - R$ ${s.valor_servico}`,
+    label: `${s.nome}`,
   }));
 
   const tecnicoOptions = tecnico.map((t) => ({
