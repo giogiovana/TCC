@@ -77,12 +77,14 @@ export const consultarOs = () => {
   const getStatusClass = (id: string) => {
     const descricao = getStatusDescricao(id).toLowerCase();
 
-    if (descricao.includes("aberta")) return "status-aberta";
+    if (descricao.includes("aberta") || descricao.includes("orçamento")) 
+    return "status-aberta"
 
     if (descricao.includes("atendimento") || descricao.includes("aguardando"))
       return "status-andamento";
 
-    if (descricao.includes("finalizada")) return "status-finalizada";
+    if (descricao.includes("finalizada") || descricao.includes("faturada") || descricao.includes("entregue"))
+     return "status-finalizada";
 
     if (descricao.includes("cancelada")) return "status-cancelada";
 

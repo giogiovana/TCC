@@ -53,17 +53,17 @@ func (r *TecnicoRepoPG) Create(ctx context.Context, in models.TecnicoCreate) (mo
 	returning id_tecnico
 `
 
-var IdTecnico string
+	var IdTecnico string
 
-if err = tx.QueryRowContext(
-	ctx,
-	qTecnico,
-	idPessoa,
-	in.Especialidade,
-	in.FgAtivo,
-).Scan(&IdTecnico); err != nil {
-	return models.Tecnico{}, err
-}
+	if err = tx.QueryRowContext(
+		ctx,
+		qTecnico,
+		idPessoa,
+		in.Especialidade,
+		in.FgAtivo,
+	).Scan(&IdTecnico); err != nil {
+		return models.Tecnico{}, err
+	}
 
 	if err = tx.Commit(); err != nil {
 		return models.Tecnico{}, err
@@ -145,15 +145,15 @@ where id_tecnico = $1
 returning id_pessoa
 `
 
-if err := tx.QueryRowContext(
-	ctx,
-	qTecnico,
-	in.IdTecnico,
-	nullIfEmpty(in.Especialidade),
-	nullIfEmpty(in.FgAtivo),
-).Scan(&idPessoa); err != nil {
-	return err
-}
+	if err := tx.QueryRowContext(
+		ctx,
+		qTecnico,
+		in.IdTecnico,
+		nullIfEmpty(in.Especialidade),
+		nullIfEmpty(in.FgAtivo),
+	).Scan(&idPessoa); err != nil {
+		return err
+	}
 
 	const qPessoa = `
 	update pessoas set
@@ -174,8 +174,14 @@ if err := tx.QueryRowContext(
 	`
 
 	if _, err = tx.ExecContext(ctx, qPessoa,
-		idPessoa, in.CpfCnpj, in.RgIe, in.RazaoSocial, in.FgTipo, in.NomeFantasia,
-		in.Email, in.Telefone, in.Cep, in.Logradouro, in.Numero, in.Bairro, in.Cidade, in.Uf,
+		idPessoa,
+		in.CpfCnpj,
+		in.RgIe,
+		in.FgTipo,
+		in.RazaoSocial,
+		in.NomeFantasia,
+		in.Email,
+		in.Telefone, in.Cep, in.Logradouro, in.Numero, in.Bairro, in.Cidade, in.Uf,
 	); err != nil {
 		return err
 	}

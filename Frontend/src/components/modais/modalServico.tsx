@@ -75,8 +75,9 @@ export default function ModalServico({
   }));
 
   const tecnicoOptions = tecnico.map((t) => ({
-    value: t.id_tecnico,
-    label: t.nome_fantasia,
+  value: t.id_tecnico,
+  label: t.nome_fantasia,
+  isDisabled: t.fg_ativo !== "S",
   }));
 
   const onSubmit = (data: Itens) => {

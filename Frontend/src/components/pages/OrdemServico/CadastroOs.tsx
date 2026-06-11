@@ -135,10 +135,11 @@ export function CadastroOs() {
     label: p.descricao,
   }));
 
-  const clienteOptions = cliente.map((c) => ({
+  const clienteOptions = cliente .map((c) => ({
     value: c.id_cliente,
     label: c.razao_social,
-  }));
+    isDisabled: c.fg_ativo !== "S",
+  }))
 
   const statusOptions = status.map((s) => ({
     value: s.id_status,

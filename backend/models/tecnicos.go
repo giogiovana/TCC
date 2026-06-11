@@ -14,7 +14,6 @@ type TecnicoCreate struct {
 	Bairro       string `json:"bairro"`
 	Cidade       string `json:"cidade"`
 	Uf           string `json:"uf"`
-
 	Especialidade string `json:"especialidade"`
 	FgAtivo       string `json:"fg_ativo"`
 }
